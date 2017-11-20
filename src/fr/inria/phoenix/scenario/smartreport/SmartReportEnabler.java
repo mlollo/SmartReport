@@ -1,6 +1,6 @@
 package fr.inria.phoenix.scenario.smartreport;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fr.inria.diagen.core.enabler.AbstractApplicationEnabler;
@@ -12,32 +12,29 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 	public static String targetContactSensor = Configuration.CONTACT_SENSOR_VALUE;
 	public static String targetElectricSensor = Configuration.ELECTRIC_SENSOR_VALUE;
 
-	private static List<PropertyInfo> properties = new ArrayList<> ();
-			
+	private final static List<PropertyInfo> properties = Arrays.asList(
+			new PropertyInfo(
+						Configuration.CONTACT_SENSOR_KEY, 
+						Configuration.CONTACT_SENSOR_NAME, 
+						Configuration.CONTACT_SENSOR_DESCRIPTION,
+						PropertyFormat.Boolean, 
+						Configuration.CONTACT_SENSOR_VALUE
+					),
+			new PropertyInfo(
+						Configuration.ELECTRIC_SENSOR_KEY, 
+						Configuration.ELECTRIC_SENSOR_NAME, 
+						Configuration.ELECTRIC_SENSOR_DESCRIPTION,
+						PropertyFormat.Float, 
+						Configuration.ELECTRIC_SENSOR_VALUE
+					)
+			);
 
 	public SmartReportEnabler() {
 		super(Configuration.APP_NAME, properties);
-		properties.add(new PropertyInfo(
-				Configuration.CONTACT_SENSOR_KEY, 
-				Configuration.CONTACT_SENSOR_NAME, 
-				Configuration.CONTACT_SENSOR_DESCRIPTION,
-				PropertyFormat.Boolean, 
-				Configuration.CONTACT_SENSOR_VALUE
-				)
-			);
-		properties.add(new PropertyInfo(
-				Configuration.ELECTRIC_SENSOR_KEY, 
-				Configuration.ELECTRIC_SENSOR_NAME, 
-				Configuration.ELECTRIC_SENSOR_DESCRIPTION,
-				PropertyFormat.Float, 
-				Configuration.ELECTRIC_SENSOR_VALUE
-				)
-			);
 	}
 
 	@Override
 	public void propertyChanged(String propertyName, String propertyValue) {
-
 		if (propertyName.equals(Configuration.CONTACT_SENSOR_KEY)) {
 			targetContactSensor = propertyValue;
 		}
@@ -49,7 +46,6 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 
 	@Override
 	public boolean isValid(String propertyName, String propertyValue) {
-
 		if (propertyName.equals(Configuration.CONTACT_SENSOR_KEY)) {
 			return true;
 		} else if (propertyName.equals(Configuration.ELECTRIC_SENSOR_KEY)) {
@@ -57,7 +53,6 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		} else {
 			return false;
 		}
-
 	}
 
 	public static String getTargetContactSensor() {
