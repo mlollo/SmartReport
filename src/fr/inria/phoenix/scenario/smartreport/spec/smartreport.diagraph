@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<DiaGraph>
+	<controller id="ReportController" x="0.0" y="0.0"/>
+	<action id="Messenger/SendMessage" x="-3.0" y="284.0"/>
+	<context id="Report" x="588.0" y="23.0"/>
+	<context id="ElectricSensorExpected" x="758.0" y="131.0"/>
+	<context id="CheckExit" x="506.0" y="214.0"/>
+	<source id="InactivitySensor/inactivityLevel" x="146.0" y="173.0"/>
+	<source id="InactivitySensor/lastInteraction" x="257.0" y="130.0"/>
+	<source id="ElectricMeter/consumption" x="363.0" y="288.0"/>
+	<context id="ContactSensorExpected" x="436.0" y="121.0"/>
+	<source id="ContactSensor/contact" x="71.0" y="91.0"/>
+</DiaGraph>

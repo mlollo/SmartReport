@@ -1,0 +1,37 @@
+include "taxonomy.diaspec";
+
+structure SensorReport {
+	id as Integer;
+	name as String;
+	expectedValue as String;
+	value as String;
+}
+
+context CheckExit as Boolean {
+	when provided inactivityLevel from InactivitySensor
+	   		get lastInteraction from InactivitySensor
+	maybe publish;
+}
+
+context ContactSensorExpected as SensorReport indexed by id as Integer {
+	when provided CheckExit 
+	   		get contact from ContactSensor
+	maybe publish;
+}
+
+context ElectricSensorExpected as SensorReport indexed by id as Integer {
+	when provided CheckExit 
+	   		get consumption from ElectricMeter
+	maybe publish;
+}
+
+context Report as SensorReport[] {
+	when provided ContactSensorExpected 
+	always publish;
+	when provided ElectricSensorExpected 
+	always publish;
+}
+
+controller ReportController {
+	when provided Report do SendMessage on Messenger;
+}
