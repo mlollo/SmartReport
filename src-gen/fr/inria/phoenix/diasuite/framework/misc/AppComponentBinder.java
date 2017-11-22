@@ -47,7 +47,8 @@ public abstract class AppComponentBinder extends AbstractDeploy {
      * context ReportContext as SensorReport[] {
      * 	when provided inactivityLevel from InactivitySensor
      * 	   		get contact from ContactSensor,
-     * 	   		consumption from ElectricMeter
+     * 	   		consumption from ElectricMeter,
+     * 	   		lastInteraction from InactivitySensor
      * 	maybe publish;
      * }
      * </pre>

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * <pre>
  * structure SensorReport {
- * 	id as Integer;
+ * 	id as String;
  * 	name as String;
  * 	expectedValue as String;
  * 	value as String;
@@ -16,17 +16,17 @@ public class SensorReport implements Serializable {
     private static final long serialVersionUID = 0;
 
     // Code for field id
-    private java.lang.Integer id;
+    private java.lang.String id;
     
     /**
      * Returns the value of the id field.
      * 
      * <pre>
-     * id as Integer
+     * id as String
      * </pre>
      * @return the value of id
      */
-    public java.lang.Integer getId() {
+    public java.lang.String getId() {
         return id;
     }
     
@@ -34,11 +34,11 @@ public class SensorReport implements Serializable {
      * Set the value of the id field.
      * 
      * <pre>
-     * id as Integer
+     * id as String
      * </pre>
      * @param id the new value of id
      */
-    public void setId(java.lang.Integer id) {
+    public void setId(java.lang.String id) {
         this.id = id;
     }
     // End of code for field id
@@ -130,7 +130,7 @@ public class SensorReport implements Serializable {
     public SensorReport() {
     }
 
-    public SensorReport(java.lang.Integer id,
+    public SensorReport(java.lang.String id,
             java.lang.String name,
             java.lang.String expectedValue,
             java.lang.String value) {

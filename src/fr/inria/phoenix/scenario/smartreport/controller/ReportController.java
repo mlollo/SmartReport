@@ -15,14 +15,13 @@ public class ReportController extends AbstractReportController {
 
 	public ReportController(ServiceConfiguration serviceConfiguration) {
 		super(serviceConfiguration);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void onReportContext(ReportContextValue report, DiscoverForReportContext discover) {
 		List<String> content = new ArrayList<>();
 		String title = new String();
-		Contact to = new Contact(Configuration.USER_NAME, Configuration.USER_EMAIL, "", "", null);
+		Contact to = new Contact(Configuration.USER_NAME, Configuration.USER_EMAIL, Configuration.USER_PHONE, "", null);
 		
 		content.add("Smart Report : ");
 		report.value().stream().forEach(p -> {
@@ -33,6 +32,7 @@ public class ReportController extends AbstractReportController {
 		message.setContent(content.stream().collect(Collectors.joining("\n")));
 		message.setTitle(title);
 		message.setTo(to);
-		discover.messengers().whereId("id").sendMessage(message);
+		System.out.println(content);
+		discover.messengers().whereId("MockMessenger").sendMessage(message);
 	}
 }

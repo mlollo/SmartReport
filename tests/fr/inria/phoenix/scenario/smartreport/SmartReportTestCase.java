@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.inria.phoenix.diasuite.framework.datatype.interaction.Interaction;
+import fr.inria.phoenix.diasuite.framework.datatype.interactiontype.InteractionType;
 import fr.inria.phoenix.diasuite.framework.mocks.ContactSensorMock;
 import fr.inria.phoenix.diasuite.framework.mocks.ElectricMeterMock;
 import fr.inria.phoenix.diasuite.framework.mocks.InactivitySensorMock;
@@ -17,8 +19,10 @@ public class SmartReportTestCase {
 	
 	
 	InactivitySensorMock inactivitySensorMock;
-	ContactSensorMock contactSensorMock;
-	ElectricMeterMock electricMeterMock;
+	ContactSensorMock contactSensor1Mock;
+	ContactSensorMock contactSensor2Mock;
+	ElectricMeterMock electricMeter1Mock;
+	ElectricMeterMock electricMeter2Mock;
 	MessengerMock messengerMock;
 	
 	@Before
@@ -28,9 +32,11 @@ public class SmartReportTestCase {
 
 		String location = "Target floor";
 
-		inactivitySensorMock = mockInactivitySensor("MockInactivitySensor");
-		contactSensorMock  = mockContactSensor("MockContactSensor", location, "Tester");
-		electricMeterMock = mockElectricMeter("MockElectricMeter", location, "Tester");
+		inactivitySensorMock = mockInactivitySensor(SmartReportEnabler.getTriggerSensorId());
+		contactSensor1Mock  = mockContactSensor(SmartReportEnabler.getContactSensorsId().get(0), location, "Tester");
+		contactSensor2Mock  = mockContactSensor(SmartReportEnabler.getContactSensorsId().get(1), location, "Tester");
+		electricMeter1Mock = mockElectricMeter(SmartReportEnabler.getElectricSensorsId().get(0), location, "Tester");
+		electricMeter2Mock = mockElectricMeter(SmartReportEnabler.getElectricSensorsId().get(1), location, "Tester");
 		messengerMock  = mockMessenger("MockMessenger");
 	}
 
@@ -41,12 +47,33 @@ public class SmartReportTestCase {
 	
 	 @Test
 	 public void testSendReport() {
-		 inactivitySensorMock.inactivityLevel((float) 2);
 		 // Publish a motion value
-		 contactSensorMock.contact(true);
-		 electricMeterMock.consumption((float)0.5);
+		 inactivitySensorMock.inactivityLevel((float) 2);
+		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
+	
+		 // Set a sensor state
+		 contactSensor1Mock.setContact(false);
+		 contactSensor2Mock.setContact(false);
+		 electricMeter1Mock.setConsumption((float)0.5);
+		 electricMeter2Mock.setConsumption((float)0.5);
+		 
 		 // And expect a message sent
-		 assertTrue(messengerMock.id("id").expectSendMessage());
+		 assertTrue(messengerMock.expectSendMessage());
+	}
+	 
+
+	 @Test
+	 public void testReportOk() {
+		 // Publish a motion value
+		 inactivitySensorMock.inactivityLevel((float) 0.1);
+		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
+		 // Set a sensor state
+		 contactSensor1Mock.setContact(true);
+		 contactSensor2Mock.setContact(true);
+		 electricMeter1Mock.setConsumption((float)0.1);
+		 electricMeter2Mock.setConsumption((float)0.1);
+		 // And expect a message sent
+		 assertFalse(messengerMock.expectSendMessage());
 	}
 
 }

@@ -14,7 +14,8 @@ import fr.inria.phoenix.diasuite.framework.device.inactivitysensor.InactivityLev
  * context ReportContext as SensorReport[] {
  * 	when provided inactivityLevel from InactivitySensor
  * 	   		get contact from ContactSensor,
- * 	   		consumption from ElectricMeter
+ * 	   		consumption from ElectricMeter,
+ * 	   		lastInteraction from InactivitySensor
  * 	maybe publish;
  * }
  * </pre>
@@ -134,7 +135,8 @@ public abstract class AbstractReportContext extends Service {
      * <pre>
      * when provided inactivityLevel from InactivitySensor
      * 	   		get contact from ContactSensor,
-     * 	   		consumption from ElectricMeter
+     * 	   		consumption from ElectricMeter,
+     * 	   		lastInteraction from InactivitySensor
      * 	maybe publish;
      * </pre>
      * 
@@ -399,13 +401,15 @@ public abstract class AbstractReportContext extends Service {
      * <code>
      * when provided inactivityLevel from InactivitySensor
      * 	   		get contact from ContactSensor,
-     * 	   		consumption from ElectricMeter
+     * 	   		consumption from ElectricMeter,
+     * 	   		lastInteraction from InactivitySensor
      * 	maybe publish;
      * </code>
      */
     protected final class DiscoverForInactivityLevelFromInactivitySensor {
         private final ContactSensorDiscovererForInactivityLevelFromInactivitySensor contactSensorDiscoverer = new ContactSensorDiscovererForInactivityLevelFromInactivitySensor(AbstractReportContext.this);
         private final ElectricMeterDiscovererForInactivityLevelFromInactivitySensor electricMeterDiscoverer = new ElectricMeterDiscovererForInactivityLevelFromInactivitySensor(AbstractReportContext.this);
+        private final InactivitySensorDiscovererForInactivityLevelFromInactivitySensor inactivitySensorDiscoverer = new InactivitySensorDiscovererForInactivityLevelFromInactivitySensor(AbstractReportContext.this);
         
         /**
          * @return a {@link ContactSensorDiscovererForInactivityLevelFromInactivitySensor} object to discover <code>ContactSensor</code> devices
@@ -419,6 +423,13 @@ public abstract class AbstractReportContext extends Service {
          */
         public ElectricMeterDiscovererForInactivityLevelFromInactivitySensor electricMeters() {
             return electricMeterDiscoverer;
+        }
+        
+        /**
+         * @return a {@link InactivitySensorDiscovererForInactivityLevelFromInactivitySensor} object to discover <code>InactivitySensor</code> devices
+         */
+        public InactivitySensorDiscovererForInactivityLevelFromInactivitySensor inactivitySensors() {
+            return inactivitySensorDiscoverer;
         }
     }
     
@@ -761,6 +772,193 @@ public abstract class AbstractReportContext extends Service {
          */
         public java.lang.String user() {
             return (java.lang.String) callGetValue("user");
+        }
+    }
+    
+    /**
+     * Discover object that will exposes the <code>InactivitySensor</code> devices to get their sources for the
+     * <code>when provided inactivityLevel from InactivitySensor</code> interaction contract.
+     * <p>
+     * ------------------------------------------------------------
+     * Presence Detector					||
+     * ------------------------------------------------------------
+     * enumeration Room {
+     * ENTRANCE, BEDROOM, KITCHEN, BATHROOM, LIVING, TOILET
+     * }
+     * 
+     * device IndoorLocationDetector extends SoftwareSensor {
+     * // AR (14/02/17)
+     * source currentRoom as Room;
+     * action SetLocation;
+     * }
+     * 
+     * action SetLocation {
+     * setLocation(location as Room);
+     * resetLocation();
+     * }
+     * ------------------------------------------------------------
+     * InactivitySensor					||
+     * ------------------------------------------------------------
+     * AR (01/08/17)
+     * 
+     * <pre>
+     * device InactivitySensor extends SoftwareSensor {
+     * 	source inactivityLevel as Float;
+     * 	source lastInteraction as Interaction;
+     * 	action UpdateInactivityLevel;
+     * }
+     * </pre>
+     */
+    protected final static class InactivitySensorDiscovererForInactivityLevelFromInactivitySensor {
+        private Service serviceParent;
+        
+        private InactivitySensorDiscovererForInactivityLevelFromInactivitySensor(Service serviceParent) {
+            super();
+            this.serviceParent = serviceParent;
+        }
+        
+        private InactivitySensorCompositeForInactivityLevelFromInactivitySensor instantiateComposite() {
+            return new InactivitySensorCompositeForInactivityLevelFromInactivitySensor(serviceParent);
+        }
+        
+        /**
+         * Returns a composite of all accessible <code>InactivitySensor</code> devices
+         * 
+         * @return a {@link InactivitySensorCompositeForInactivityLevelFromInactivitySensor} object composed of all discoverable <code>InactivitySensor</code>
+         */
+        public InactivitySensorCompositeForInactivityLevelFromInactivitySensor all() {
+            return instantiateComposite();
+        }
+        
+        /**
+         * Returns a proxy to one out of all accessible <code>InactivitySensor</code> devices
+         * 
+         * @return a {@link InactivitySensorProxyForInactivityLevelFromInactivitySensor} object pointing to a random discoverable <code>InactivitySensor</code> device
+         */
+        public InactivitySensorProxyForInactivityLevelFromInactivitySensor anyOne() {
+            return all().anyOne();
+        }
+        
+        /**
+         * Returns a composite of all accessible <code>InactivitySensor</code> devices whose attribute <code>id</code> matches a given value.
+         * 
+         * @param id The <code>id<code> attribute value to match.
+         * @return a {@link InactivitySensorCompositeForInactivityLevelFromInactivitySensor} object composed of all matching <code>InactivitySensor</code> devices
+         */
+        public InactivitySensorCompositeForInactivityLevelFromInactivitySensor whereId(java.lang.String id) throws CompositeException {
+            return instantiateComposite().andId(id);
+        }
+    }
+    
+    /**
+     * A composite of several <code>InactivitySensor</code> devices to get their sources for the
+     * <code>when provided inactivityLevel from InactivitySensor</code> interaction contract.
+     * <p>
+     * ------------------------------------------------------------
+     * Presence Detector					||
+     * ------------------------------------------------------------
+     * enumeration Room {
+     * ENTRANCE, BEDROOM, KITCHEN, BATHROOM, LIVING, TOILET
+     * }
+     * 
+     * device IndoorLocationDetector extends SoftwareSensor {
+     * // AR (14/02/17)
+     * source currentRoom as Room;
+     * action SetLocation;
+     * }
+     * 
+     * action SetLocation {
+     * setLocation(location as Room);
+     * resetLocation();
+     * }
+     * ------------------------------------------------------------
+     * InactivitySensor					||
+     * ------------------------------------------------------------
+     * AR (01/08/17)
+     * 
+     * <pre>
+     * device InactivitySensor extends SoftwareSensor {
+     * 	source inactivityLevel as Float;
+     * 	source lastInteraction as Interaction;
+     * 	action UpdateInactivityLevel;
+     * }
+     * </pre>
+     */
+    protected final static class InactivitySensorCompositeForInactivityLevelFromInactivitySensor extends fr.inria.diagen.core.service.composite.Composite<InactivitySensorProxyForInactivityLevelFromInactivitySensor> {
+        private InactivitySensorCompositeForInactivityLevelFromInactivitySensor(Service serviceParent) {
+            super(serviceParent, "/Device/Device/Service/SoftwareSensor/InactivitySensor/");
+        }
+        
+        @Override
+        protected InactivitySensorProxyForInactivityLevelFromInactivitySensor instantiateProxy(RemoteServiceInfo rsi) {
+            return new InactivitySensorProxyForInactivityLevelFromInactivitySensor(service, rsi);
+        }
+        
+        /**
+         * Returns this composite in which a filter was set to the attribute <code>id</code>.
+         * 
+         * @param id The <code>id<code> attribute value to match.
+         * @return this {@link InactivitySensorCompositeForInactivityLevelFromInactivitySensor}, filtered using the attribute <code>id</code>.
+         */
+        public InactivitySensorCompositeForInactivityLevelFromInactivitySensor andId(java.lang.String id) throws CompositeException {
+            filterByAttribute("id", id);
+            return this;
+        }
+    }
+    
+    /**
+     * A proxy to one <code>InactivitySensor</code> device to get its sources for the
+     * <code>when provided inactivityLevel from InactivitySensor</code> interaction contract.
+     * <p>
+     * ------------------------------------------------------------
+     * Presence Detector					||
+     * ------------------------------------------------------------
+     * enumeration Room {
+     * ENTRANCE, BEDROOM, KITCHEN, BATHROOM, LIVING, TOILET
+     * }
+     * 
+     * device IndoorLocationDetector extends SoftwareSensor {
+     * // AR (14/02/17)
+     * source currentRoom as Room;
+     * action SetLocation;
+     * }
+     * 
+     * action SetLocation {
+     * setLocation(location as Room);
+     * resetLocation();
+     * }
+     * ------------------------------------------------------------
+     * InactivitySensor					||
+     * ------------------------------------------------------------
+     * AR (01/08/17)
+     * 
+     * <pre>
+     * device InactivitySensor extends SoftwareSensor {
+     * 	source inactivityLevel as Float;
+     * 	source lastInteraction as Interaction;
+     * 	action UpdateInactivityLevel;
+     * }
+     * </pre>
+     */
+    protected final static class InactivitySensorProxyForInactivityLevelFromInactivitySensor extends Proxy {
+        private InactivitySensorProxyForInactivityLevelFromInactivitySensor(Service service, RemoteServiceInfo remoteServiceInfo) {
+            super(service, remoteServiceInfo);
+        }
+        
+        /**
+         * Returns the value of the <code>lastInteraction</code> source of this <code>InactivitySensor</code> device
+         * 
+         * @return the value of the <code>lastInteraction</code> source
+         */
+        public fr.inria.phoenix.diasuite.framework.datatype.interaction.Interaction getLastInteraction() throws InvocationException {
+            return (fr.inria.phoenix.diasuite.framework.datatype.interaction.Interaction) callGetValue("lastInteraction");
+        }
+        
+        /**
+         * @return the value of the <code>id</code> attribute
+         */
+        public java.lang.String id() {
+            return (java.lang.String) callGetValue("id");
         }
     }
     // End of discover object for inactivityLevel from InactivitySensor

@@ -1,7 +1,7 @@
 include "taxonomy.diaspec";
 
 structure SensorReport {
-	id as Integer;
+	id as String;
 	name as String;
 	expectedValue as String;
 	value as String;
@@ -10,7 +10,8 @@ structure SensorReport {
 context ReportContext as SensorReport[] {
 	when provided inactivityLevel from InactivitySensor
 	   		get contact from ContactSensor,
-	   		consumption from ElectricMeter
+	   		consumption from ElectricMeter,
+	   		lastInteraction from InactivitySensor
 	maybe publish;
 }
 
