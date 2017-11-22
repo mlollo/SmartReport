@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.inria.diagen.core.ServiceConfiguration;
-import fr.inria.phoenix.diasuite.framework.context.report.ReportValue;
+import fr.inria.phoenix.diasuite.framework.context.reportcontext.ReportContextValue;
 import fr.inria.phoenix.diasuite.framework.controller.reportcontroller.AbstractReportController;
 import fr.inria.phoenix.diasuite.framework.datatype.contact.Contact;
 import fr.inria.phoenix.diasuite.framework.datatype.message.Message;
@@ -19,7 +19,7 @@ public class ReportController extends AbstractReportController {
 	}
 
 	@Override
-	protected void onReport(ReportValue report, DiscoverForReport discover) {
+	protected void onReportContext(ReportContextValue report, DiscoverForReportContext discover) {
 		List<String> content = new ArrayList<>();
 		String title = new String();
 		Contact to = new Contact(Configuration.USER_NAME, Configuration.USER_EMAIL, "", "", null);
@@ -33,7 +33,6 @@ public class ReportController extends AbstractReportController {
 		message.setContent(content.stream().collect(Collectors.joining("\n")));
 		message.setTitle(title);
 		message.setTo(to);
-		discover.messengers().all().sendMessage(message);
+		discover.messengers().whereId("id").sendMessage(message);
 	}
-	
 }

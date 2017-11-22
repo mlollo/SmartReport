@@ -7,12 +7,12 @@ import fr.inria.diagen.core.network.RemoteServiceInfo;
 import fr.inria.diagen.core.service.local.Service;
 import fr.inria.diagen.core.service.proxy.Proxy;
 
-import fr.inria.phoenix.diasuite.framework.context.report.ReportValue;
+import fr.inria.phoenix.diasuite.framework.context.reportcontext.ReportContextValue;
 
 /**
  * <pre>
  * controller ReportController {
- * 	when provided Report do SendMessage on Messenger;
+ * 	when provided ReportContext do SendMessage on Messenger;
  * }
  * </pre>
  */
@@ -26,57 +26,57 @@ public abstract class AbstractReportController extends Service {
     // Methods from the Service class
     @Override
     protected final void internalPostInitialize() {
-        subscribeValue("report", "/Context/Report/"); // subscribe to Report context
+        subscribeValue("reportContext", "/Context/ReportContext/"); // subscribe to ReportContext context
         postInitialize();
     }
     
     @Override
     public final void valueReceived(java.util.Map<String, Object> properties, RemoteServiceInfo source, String eventName, Object value, Object... indexes) {
-        if (eventName.equals("report") && source.isCompatible("/Context/Report/")) {
-            ReportValue reportValue = new ReportValue((java.util.List<fr.inria.phoenix.diasuite.framework.datatype.sensorreport.SensorReport>) value);
+        if (eventName.equals("reportContext") && source.isCompatible("/Context/ReportContext/")) {
+            ReportContextValue reportContextValue = new ReportContextValue((java.util.List<fr.inria.phoenix.diasuite.framework.datatype.sensorreport.SensorReport>) value);
             
-            onReport(reportValue, new DiscoverForReport());
+            onReportContext(reportContextValue, new DiscoverForReportContext());
         }
     }
     // End of methods from the Service class
     
     // Interaction contract implementation
     /**
-     * This method is called when the <code>Report</code> context publishes a value.
+     * This method is called when the <code>ReportContext</code> context publishes a value.
      * 
      * <pre>
-     * when provided Report do SendMessage on Messenger;
+     * when provided ReportContext do SendMessage on Messenger;
      * </pre>
      * 
-     * @param report the value of the <code>Report</code> context.
+     * @param reportContext the value of the <code>ReportContext</code> context.
      * @param discover a discover object to get context values and action methods
      */
-    protected abstract void onReport(ReportValue report, DiscoverForReport discover);
+    protected abstract void onReportContext(ReportContextValue reportContext, DiscoverForReportContext discover);
     
     // End of interaction contract implementation
     
-    // Discover object for Report
+    // Discover object for ReportContext
     /**
      * An object to discover devices and contexts for the following interaction contract:
      * 
      * <code>
-     * when provided Report do SendMessage on Messenger;
+     * when provided ReportContext do SendMessage on Messenger;
      * </code>
      */
-    protected final class DiscoverForReport {
-        private final MessengerDiscovererForReport messengerDiscoverer = new MessengerDiscovererForReport(AbstractReportController.this);
+    protected final class DiscoverForReportContext {
+        private final MessengerDiscovererForReportContext messengerDiscoverer = new MessengerDiscovererForReportContext(AbstractReportController.this);
         
         /**
-         * @return a {@link MessengerDiscovererForReport} object to discover <code>Messenger</code> devices
+         * @return a {@link MessengerDiscovererForReportContext} object to discover <code>Messenger</code> devices
          */
-        public MessengerDiscovererForReport messengers() {
+        public MessengerDiscovererForReportContext messengers() {
             return messengerDiscoverer;
         }
     }
     
     /**
      * Discover object that will exposes the <code>Messenger</code> devices to execute action on for the
-     * <code>when provided Report</code> interaction contract.
+     * <code>when provided ReportContext</code> interaction contract.
      * 
      * <pre>
      * device Messenger extends CommunicationService {
@@ -85,33 +85,33 @@ public abstract class AbstractReportController extends Service {
      * }
      * </pre>
      */
-    protected final static class MessengerDiscovererForReport {
+    protected final static class MessengerDiscovererForReportContext {
         private Service serviceParent;
         
-        private MessengerDiscovererForReport(Service serviceParent) {
+        private MessengerDiscovererForReportContext(Service serviceParent) {
             super();
             this.serviceParent = serviceParent;
         }
         
-        private MessengerCompositeForReport instantiateComposite() {
-            return new MessengerCompositeForReport(serviceParent);
+        private MessengerCompositeForReportContext instantiateComposite() {
+            return new MessengerCompositeForReportContext(serviceParent);
         }
         
         /**
          * Returns a composite of all accessible <code>Messenger</code> devices
          * 
-         * @return a {@link MessengerCompositeForReport} object composed of all discoverable <code>Messenger</code>
+         * @return a {@link MessengerCompositeForReportContext} object composed of all discoverable <code>Messenger</code>
          */
-        public MessengerCompositeForReport all() {
+        public MessengerCompositeForReportContext all() {
             return instantiateComposite();
         }
         
         /**
          * Returns a proxy to one out of all accessible <code>Messenger</code> devices
          * 
-         * @return a {@link MessengerProxyForReport} object pointing to a random discoverable <code>Messenger</code> device
+         * @return a {@link MessengerProxyForReportContext} object pointing to a random discoverable <code>Messenger</code> device
          */
-        public MessengerProxyForReport anyOne() {
+        public MessengerProxyForReportContext anyOne() {
             return all().anyOne();
         }
         
@@ -119,16 +119,16 @@ public abstract class AbstractReportController extends Service {
          * Returns a composite of all accessible <code>Messenger</code> devices whose attribute <code>id</code> matches a given value.
          * 
          * @param id The <code>id<code> attribute value to match.
-         * @return a {@link MessengerCompositeForReport} object composed of all matching <code>Messenger</code> devices
+         * @return a {@link MessengerCompositeForReportContext} object composed of all matching <code>Messenger</code> devices
          */
-        public MessengerCompositeForReport whereId(java.lang.String id) throws CompositeException {
+        public MessengerCompositeForReportContext whereId(java.lang.String id) throws CompositeException {
             return instantiateComposite().andId(id);
         }
     }
     
     /**
      * A composite of several <code>Messenger</code> devices to execute action on for the
-     * <code>when provided Report</code> interaction contract.
+     * <code>when provided ReportContext</code> interaction contract.
      * 
      * <pre>
      * device Messenger extends CommunicationService {
@@ -137,23 +137,23 @@ public abstract class AbstractReportController extends Service {
      * }
      * </pre>
      */
-    protected final static class MessengerCompositeForReport extends fr.inria.diagen.core.service.composite.Composite<MessengerProxyForReport> {
-        private MessengerCompositeForReport(Service serviceParent) {
+    protected final static class MessengerCompositeForReportContext extends fr.inria.diagen.core.service.composite.Composite<MessengerProxyForReportContext> {
+        private MessengerCompositeForReportContext(Service serviceParent) {
             super(serviceParent, "/Device/Device/Service/CommunicationService/Messenger/");
         }
         
         @Override
-        protected MessengerProxyForReport instantiateProxy(RemoteServiceInfo rsi) {
-            return new MessengerProxyForReport(service, rsi);
+        protected MessengerProxyForReportContext instantiateProxy(RemoteServiceInfo rsi) {
+            return new MessengerProxyForReportContext(service, rsi);
         }
         
         /**
          * Returns this composite in which a filter was set to the attribute <code>id</code>.
          * 
          * @param id The <code>id<code> attribute value to match.
-         * @return this {@link MessengerCompositeForReport}, filtered using the attribute <code>id</code>.
+         * @return this {@link MessengerCompositeForReportContext}, filtered using the attribute <code>id</code>.
          */
-        public MessengerCompositeForReport andId(java.lang.String id) throws CompositeException {
+        public MessengerCompositeForReportContext andId(java.lang.String id) throws CompositeException {
             filterByAttribute("id", id);
             return this;
         }
@@ -165,7 +165,7 @@ public abstract class AbstractReportController extends Service {
          */
         public void sendMessage(fr.inria.phoenix.diasuite.framework.datatype.message.Message message) throws InvocationException {
             launchDiscovering();
-            for (MessengerProxyForReport proxy : proxies) {
+            for (MessengerProxyForReportContext proxy : proxies) {
                 proxy.sendMessage(message);
             }
         }
@@ -173,7 +173,7 @@ public abstract class AbstractReportController extends Service {
     
     /**
      * A proxy to one <code>Messenger</code> device to execute action on for the
-     * <code>when provided Report</code> interaction contract.
+     * <code>when provided ReportContext</code> interaction contract.
      * 
      * <pre>
      * device Messenger extends CommunicationService {
@@ -182,8 +182,8 @@ public abstract class AbstractReportController extends Service {
      * }
      * </pre>
      */
-    protected final static class MessengerProxyForReport extends Proxy {
-        private MessengerProxyForReport(Service service, RemoteServiceInfo remoteServiceInfo) {
+    protected final static class MessengerProxyForReportContext extends Proxy {
+        private MessengerProxyForReportContext(Service service, RemoteServiceInfo remoteServiceInfo) {
             super(service, remoteServiceInfo);
         }
         
@@ -203,5 +203,5 @@ public abstract class AbstractReportController extends Service {
             return (java.lang.String) callGetValue("id");
         }
     }
-    // End of discover object for Report
+    // End of discover object for ReportContext
 }

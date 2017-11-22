@@ -3,10 +3,7 @@ package fr.inria.phoenix.diasuite.framework.mocks;
 import fr.inria.diagen.core.ServiceConfiguration;
 import fr.inria.phoenix.diasuite.framework.misc.AppComponentBinder;
 import fr.inria.phoenix.diasuite.framework.controller.reportcontroller.AbstractReportController;
-import fr.inria.phoenix.diasuite.framework.context.checkexit.AbstractCheckExit;
-import fr.inria.phoenix.diasuite.framework.context.contactsensorexpected.AbstractContactSensorExpected;
-import fr.inria.phoenix.diasuite.framework.context.electricsensorexpected.AbstractElectricSensorExpected;
-import fr.inria.phoenix.diasuite.framework.context.report.AbstractReport;
+import fr.inria.phoenix.diasuite.framework.context.reportcontext.AbstractReportContext;
 
 /**
  * Use this class to test your DiaSuite application.
@@ -95,17 +92,8 @@ public final class Mock extends AppComponentBinder {
     public Class<? extends AbstractReportController> getReportControllerClass() {
         return delegate.getReportControllerClass();
     }
-    public Class<? extends AbstractCheckExit> getCheckExitClass() {
-        return delegate.getCheckExitClass();
-    }
-    public Class<? extends AbstractContactSensorExpected> getContactSensorExpectedClass() {
-        return delegate.getContactSensorExpectedClass();
-    }
-    public Class<? extends AbstractElectricSensorExpected> getElectricSensorExpectedClass() {
-        return delegate.getElectricSensorExpectedClass();
-    }
-    public Class<? extends AbstractReport> getReportClass() {
-        return delegate.getReportClass();
+    public Class<? extends AbstractReportContext> getReportContextClass() {
+        return delegate.getReportContextClass();
     }
     
     // Mocks constructor for all devices
