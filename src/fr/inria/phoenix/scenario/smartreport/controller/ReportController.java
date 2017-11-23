@@ -20,19 +20,19 @@ public class ReportController extends AbstractReportController {
 	@Override
 	protected void onReportContext(ReportContextValue report, DiscoverForReportContext discover) {
 		List<String> content = new ArrayList<>();
-		String title = new String();
-		Contact to = new Contact(Configuration.USER_NAME, Configuration.USER_EMAIL, Configuration.USER_PHONE, "", null);
+		String title = new String("Smart Report");
+		Contact to = new Contact(Configuration.USER_VALUE, Configuration.USER_EMAIL_VALUE, Configuration.USER_PHONE_VALUE, "", null);
 		
-		content.add("Smart Report : ");
-		report.value().stream().forEach(p -> {
-			content.add("sensor : " + p.getName() + " value : " + p.getValue());
-		});
-		
-		Message message = new Message();
-		message.setContent(content.stream().collect(Collectors.joining("\n")));
-		message.setTitle(title);
-		message.setTo(to);
-		System.out.println(content);
+		if (report.value().isEmpty()) {
+			content.add("Smart Report : Ok");
+		} else {
+			content.add("Smart Report : \n");
+			report.value().stream().forEach(p -> {
+				content.add("sensor : " + p.getId() + " value : " + p.getValue() + " expected : "+p.getExpectedValue());
+			});
+		}
+		Message message = new Message(to, title, content.stream().collect(Collectors.joining("\n")), null);
+		System.out.println(message);
 		discover.messengers().whereId("MockMessenger").sendMessage(message);
 	}
 }

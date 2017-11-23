@@ -3,10 +3,7 @@ package fr.inria.phoenix.scenario.smartreport;
 public class Configuration {
 
 	public static final String APP_NAME = "SmartReport";
-	
-	public static final String USER_EMAIL = "test@test.fr";
-	public static final String USER_PHONE = "0622334411";
-	
+
 	/***
 	 * Configuration de l'utilisateur du device qui recevra les notifications
 	 * ***/
@@ -16,11 +13,11 @@ public class Configuration {
 	public static final String USER_VALUE = "John";
 	
 	public static final String USER_EMAIL_KEY = "userEmail";
-	public static final String USER_EMAIL_NAME = "User Email";
+	public static final String USER_EMAIL_NAME = "User's Email";
 	public static final String USER_EMAIL_DESCRIPTION = "Email of the user of the smartphone receiver";
 	public static final String USER_EMAIL_VALUE = "test@test.fr";
 	
-	public static final String USER_PHONE_KEY = "User's Email";
+	public static final String USER_PHONE_KEY = "userPhone";
 	public static final String USER_PHONE_NAME = "User Mobile Phone";
 	public static final String USER_PHONE_DESCRIPTION = "Phone of the user of the smartphone receiver";
 	public static final String USER_PHONE_VALUE = "0622334411";

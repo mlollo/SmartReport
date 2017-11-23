@@ -23,61 +23,48 @@ public class ReportContext extends AbstractReportContext {
 		InactivityLevelFromInactivitySensor inactivityLevelFromInactivitySensor,
 		DiscoverForInactivityLevelFromInactivitySensor discover
 	) {
-		List<SensorReport> sensorReports = new ArrayList<>();
-
 		if (inactivityLevelFromInactivitySensor.value() > new Float(SmartReportEnabler.getInactivityDuration())
 			&& discover.inactivitySensors().anyOne().getLastInteraction().getDeviceId()
 			   .equals(SmartReportEnabler.getTriggerSensorId())
 			&& discover.inactivitySensors().anyOne().getLastInteraction().getActionType()
 			   .equals(new Boolean(SmartReportEnabler.getTriggerSensorValue()) ? InteractionType.CLOSURE : InteractionType.OPENNING)
 		) {
+			List<SensorReport> sensorReports = new ArrayList<>();
+
 			Iterator<ContactSensorProxyForInactivityLevelFromInactivitySensor> iteratorContactSensors = discover.contactSensors().all().iterator();
 			Iterator<ElectricMeterProxyForInactivityLevelFromInactivitySensor> iteratorElectricSensors = discover.electricMeters().all().iterator();
+			System.out.println(SmartReportEnabler.getContactSensorsId());
+			System.out.println(SmartReportEnabler.getElectricSensorsId());
 
 			while (iteratorContactSensors.hasNext()) {
 			
 				ContactSensorProxyForInactivityLevelFromInactivitySensor sensor = iteratorContactSensors.next();
-				System.out.println(SmartReportEnabler.getContactSensorsId());
 				int index = SmartReportEnabler.getContactSensorsId().indexOf(sensor.id());
 				
 				if (index != -1 && index < SmartReportEnabler.getContactSensorsId().size()) {
 					String sensorIndex = SmartReportEnabler.getContactSensorsId().get(index);
 					String sensorValue = SmartReportEnabler.getContactSensorsValue().get(index);
-					System.out.println(sensorIndex);
-					System.out.println(sensorValue);
-					System.out.println(sensor.getContact());
 					
-					if (sensor.getContact() != new Boolean(sensorValue)) {
-						sensorReports.add(
-								new SensorReport(sensor.id(), 
-										sensorIndex, 
-										sensorValue, 
-										sensor.getContact().toString()
-										)
-								);
-					}
+					if (sensor.getContact() != null && sensor.getContact() != Boolean.valueOf(sensorValue))
+						sensorReports.add(new SensorReport(sensor.id(), sensorIndex, sensorValue, sensor.getContact().toString()));
 				}
 			}
 					
 			while (iteratorElectricSensors.hasNext()) {
 			
 				ElectricMeterProxyForInactivityLevelFromInactivitySensor sensor = iteratorElectricSensors.next();
-				System.out.println(sensor.id());
-				System.out.println(SmartReportEnabler.getElectricSensorsId());
 				int index = SmartReportEnabler.getElectricSensorsId().indexOf(sensor.id());
 				
 				if (index != -1 && index < SmartReportEnabler.getElectricSensorsId().size()) {
 					String sensorIndex = SmartReportEnabler.getElectricSensorsId().get(index);
 					String sensorValue = SmartReportEnabler.getElectricSensorsValue().get(index);
-					System.out.println(sensorIndex);
-					System.out.println(sensorValue);
 					
-					if (sensor.getConsumption() > new Float(sensorValue)) {
+					if (sensor.getConsumption() != null && sensor.getConsumption() > new Float(sensorValue))
 						sensorReports.add(new SensorReport(sensor.id(), sensorIndex, sensorValue, sensor.getConsumption().toString()));
-					}
 				}
 			}
+			return new ReportContextValuePublishable(sensorReports, true);
 		}
-		return new ReportContextValuePublishable(sensorReports, !sensorReports.isEmpty());
+		return new ReportContextValuePublishable(null, false);
 	}
 }
