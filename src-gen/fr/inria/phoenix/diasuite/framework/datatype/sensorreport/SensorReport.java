@@ -6,7 +6,7 @@ import java.io.Serializable;
  * <pre>
  * structure SensorReport {
  * 	id as String;
- * 	name as String;
+ * 	type as String;
  * 	expectedValue as String;
  * 	value as String;
  * }
@@ -43,33 +43,33 @@ public class SensorReport implements Serializable {
     }
     // End of code for field id
 
-    // Code for field name
-    private java.lang.String name;
+    // Code for field type
+    private java.lang.String type;
     
     /**
-     * Returns the value of the name field.
+     * Returns the value of the type field.
      * 
      * <pre>
-     * name as String
+     * type as String
      * </pre>
-     * @return the value of name
+     * @return the value of type
      */
-    public java.lang.String getName() {
-        return name;
+    public java.lang.String getType() {
+        return type;
     }
     
     /**
-     * Set the value of the name field.
+     * Set the value of the type field.
      * 
      * <pre>
-     * name as String
+     * type as String
      * </pre>
-     * @param name the new value of name
+     * @param type the new value of type
      */
-    public void setName(java.lang.String name) {
-        this.name = name;
+    public void setType(java.lang.String type) {
+        this.type = type;
     }
-    // End of code for field name
+    // End of code for field type
 
     // Code for field expectedValue
     private java.lang.String expectedValue;
@@ -131,11 +131,11 @@ public class SensorReport implements Serializable {
     }
 
     public SensorReport(java.lang.String id,
-            java.lang.String name,
+            java.lang.String type,
             java.lang.String expectedValue,
             java.lang.String value) {
         this.id = id;
-        this.name = name;
+        this.type = type;
         this.expectedValue = expectedValue;
         this.value = value;
     }
@@ -145,7 +145,7 @@ public class SensorReport implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((expectedValue == null) ? 0 : expectedValue.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
@@ -165,10 +165,10 @@ public class SensorReport implements Serializable {
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (name == null) {
-            if (other.name != null)
+        if (type == null) {
+            if (other.type != null)
                 return false;
-        } else if (!name.equals(other.name))
+        } else if (!type.equals(other.type))
             return false;
         if (expectedValue == null) {
             if (other.expectedValue != null)
@@ -187,7 +187,7 @@ public class SensorReport implements Serializable {
     public String toString() {
         return "SensorReport [" + 
             "id=" + id +", " + 
-            "name=" + name +", " + 
+            "type=" + type +", " + 
             "expectedValue=" + expectedValue +", " + 
             "value=" + value +
         "]";

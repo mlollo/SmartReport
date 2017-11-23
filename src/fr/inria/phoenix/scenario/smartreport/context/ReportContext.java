@@ -43,12 +43,11 @@ public class ReportContext extends AbstractReportContext {
 				int index = SmartReportEnabler.getContactSensorsId().indexOf(sensor.id());
 				
 				if (index != -1 && index < SmartReportEnabler.getContactSensorsId().size()) {
-					String sensorIndex = SmartReportEnabler.getContactSensorsId().get(index);
 					String sensorValue = SmartReportEnabler.getContactSensorsValue().get(index);
 					Boolean sensorEnable = Boolean.valueOf(SmartReportEnabler.getContactSensorsEnable().get(index));
 					
 					if (sensorEnable == true && sensor.getContact() != null && sensor.getContact() != Boolean.valueOf(sensorValue))
-						sensorReports.add(new SensorReport(sensor.id(), sensorIndex, sensorValue, sensor.getContact().toString()));
+						sensorReports.add(new SensorReport(sensor.id(), "contact", sensorValue, sensor.getContact().toString()));
 				}
 			}
 					
@@ -58,12 +57,11 @@ public class ReportContext extends AbstractReportContext {
 				int index = SmartReportEnabler.getElectricSensorsId().indexOf(sensor.id());
 				
 				if (index != -1 && index < SmartReportEnabler.getElectricSensorsId().size()) {
-					String sensorIndex = SmartReportEnabler.getElectricSensorsId().get(index);
 					String sensorValue = SmartReportEnabler.getElectricSensorsValue().get(index);
 					Boolean sensorEnable = Boolean.valueOf(SmartReportEnabler.getElectricSensorsEnable().get(index));
 
 					if (sensorEnable == true && sensor.getConsumption() != null && sensor.getConsumption() > new Float(sensorValue))
-						sensorReports.add(new SensorReport(sensor.id(), sensorIndex, sensorValue, sensor.getConsumption().toString()));
+						sensorReports.add(new SensorReport(sensor.id(), "electric", sensorValue, sensor.getConsumption().toString()));
 				}
 			}
 			return new ReportContextValuePublishable(sensorReports, true);

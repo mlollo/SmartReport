@@ -22,13 +22,15 @@ public class ReportController extends AbstractReportController {
 		List<String> content = new ArrayList<>();
 		String title = new String("Smart Report");
 		Contact to = new Contact(Configuration.USER_VALUE, Configuration.USER_EMAIL_VALUE, Configuration.USER_PHONE_VALUE, "", null);
-		
+		content.add("Bonjour "+Configuration.USER_VALUE+" !");
+		content.add("Voici votre SmartReport : ");
+
 		if (report.value().isEmpty()) {
-			content.add("Smart Report : Ok");
+			content.add("Tout est OK !");
 		} else {
-			content.add("Smart Report : \n");
 			report.value().stream().forEach(p -> {
-				content.add("sensor : " + p.getId() + " value : " + p.getValue() + " expected : "+p.getExpectedValue());
+				String c = "contact" == p.getType() ? " ouvert " : " allumé ";
+				content.add("- " + p.getId() + " est" + c);
 			});
 		}
 		Message message = new Message(to, title, content.stream().collect(Collectors.joining("\n")), null);
