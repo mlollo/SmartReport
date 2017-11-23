@@ -3,6 +3,8 @@ package fr.inria.phoenix.scenario.smartreport;
 import static fr.inria.phoenix.diasuite.framework.mocks.Mock.*;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,24 +49,135 @@ public class SmartReportTestCase {
 		shutdown();
 	}
 	
-	 @Test
-	 public void testSendReport() {
+	@Test
+	 public void testAppEnable() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
 	
 		 // Set a sensor state
 		 contactSensor1Mock.setContact(false);
-		 contactSensor2Mock.setContact(false);
+		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
 		 
 		 // And expect a message sent
 		 assertTrue(messengerMock.expectSendMessage());
 	}
-	 
+	
+	@Test
+	 public void testAppDisable() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("false");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
+	     // Publish a motion value
+		 inactivitySensorMock.inactivityLevel((float) 2);
+		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
+	
+		 // Set a sensor state
+		 contactSensor1Mock.setContact(false);
+		 contactSensor2Mock.setContact(true);
+		 electricMeter1Mock.setConsumption((float)0.5);
+		 electricMeter2Mock.setConsumption((float)0.5);
+		 
+		 // And expect a message sent
+		 assertTrue(!messengerMock.expectSendMessage());
+	}
+	
+	
+	@Test
+	 public void testContactSensorsEnabled() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
+		 
+	     // Publish a motion value
+		 inactivitySensorMock.inactivityLevel((float) 2);
+		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
+	
+		 // Set a sensor state
+		 contactSensor1Mock.setContact(false);
+		 contactSensor2Mock.setContact(true);
+		 electricMeter1Mock.setConsumption((float)0.5);
+		 electricMeter2Mock.setConsumption((float)0.5);
+		 
+		 // And expect a message sent
+		 assertTrue(messengerMock.expectSendMessage());
+	}
+	
+	@Test
+	 public void testContactSensorsDisabled() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("false","false"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("false","false"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
+	     // Publish a motion value
+		 inactivitySensorMock.inactivityLevel((float) 2);
+		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
+	
+		 // Set a sensor state
+		 contactSensor1Mock.setContact(false);
+		 contactSensor2Mock.setContact(true);
+		 electricMeter1Mock.setConsumption((float)0.5);
+		 electricMeter2Mock.setConsumption((float)0.5);
+		 
+		 // And expect a message sent
+		 assertTrue(messengerMock.expectSendMessage());
+	}
+	
+	
 	 @Test
-	 public void testSendReportOneOfEach() {
+	 public void testSendReport() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -78,9 +191,49 @@ public class SmartReportTestCase {
 		 // And expect a message sent
 		 assertTrue(messengerMock.expectSendMessage());
 	}
+	 
+	 @Test
+	 public void testSendReportOneOfEach() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
+		 // Publish a motion value
+		 inactivitySensorMock.inactivityLevel((float) 2);
+		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
+	
+		 // Set a sensor state
+		 contactSensor1Mock.setContact(false);
+		 contactSensor2Mock.setContact(false);
+		 electricMeter1Mock.setConsumption((float)0.1);
+		 electricMeter2Mock.setConsumption((float)0.5);
+		 
+		 // And expect a message sent
+		 assertTrue(messengerMock.expectSendMessage());
+	}
 
 	 @Test
 	 public void testReportOk() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -97,13 +250,25 @@ public class SmartReportTestCase {
 	 
 	 @Test
 	 public void testReportLastInteraction() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getContactSensorsId().get(0), null));
 		 
 		 // Set a sensor state
 		 contactSensor1Mock.setContact(false);
-		 contactSensor2Mock.setContact(false);
+		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
 		 
@@ -114,13 +279,25 @@ public class SmartReportTestCase {
 	 
 	 @Test
 	 public void testReportNoInactivity() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 0.3);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
 		 
 		 // Set a sensor state
 		 contactSensor1Mock.setContact(false);
-		 contactSensor2Mock.setContact(false);
+		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
 		 
@@ -129,35 +306,30 @@ public class SmartReportTestCase {
 	}
 	 
 	 @Test
-	 public void testReport() {
-		 // Publish a motion value
-		 inactivitySensorMock.inactivityLevel((float) 2);
-		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
-		 
-		 // Set a sensor state
-		 contactSensor1Mock.setContact(false);
-		 contactSensor2Mock.setContact(false);
-		 electricMeter1Mock.setConsumption((float)0.1);
-		 electricMeter2Mock.setConsumption((float)0.8);
-		 
-		 // And expect a message sent
-		 assertFalse(messengerMock.expectSendMessage(new Message(new Contact(), new String(), new String() , null)));
-	}
-	 
-	 @Test
 	 public void testReportLessSensor() {
+	     /*Configuration*/
+	     SmartReportEnabler.setAppEnable("true");
+	     /*Trigger Sensor*/
+	     SmartReportEnabler.setInactivityDuration("0.5");
+	     SmartReportEnabler.setTriggerSensorValue("true");
+	     /*Enable*/
+	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     /*Value*/
+	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
+	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
 		 
 		 // Set a sensor state
-		 contactSensor1Mock.setContact(true);
+		 //contactSensor1Mock.setContact(true);
 		 //contactSensor2Mock.setContact(false);
-		 electricMeter1Mock.setConsumption((float)0.1);
+		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.8);
 		 
 		 // And expect a message sent
 		 assertFalse(messengerMock.expectSendMessage(new Message()));
 	}
-
 }

@@ -9,6 +9,9 @@ import fr.inria.diagen.core.enabler.PropertyInfo;
 
 public class SmartReportEnabler extends AbstractApplicationEnabler {
 
+	/*App Config*/
+	public static String appEnable = Configuration.APP_ENABLE_VALUE;
+	
 	/*Message Receiver Config*/
 	public static String userName = Configuration.USER_VALUE;
 	public static String userEmail = Configuration.USER_EMAIL_VALUE;
@@ -22,10 +25,16 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 	/*Report Sensors Config*/
 	public static List<String> contactSensorsId = Arrays.asList(Configuration.CONTACT_SENSORS_ID_VALUE.split(";"));
 	public static List<String> contactSensorsValue = Arrays.asList(Configuration.CONTACT_SENSORS_VALUE.split(";"));
+	public static List<String> contactSensorsEnable = Arrays.asList(Configuration.CONTACT_SENSORS_ENABLE_VALUE.split(";"));
+	
 	public static List<String> electricSensorsId = Arrays.asList(Configuration.ELECTRIC_SENSORS_ID_VALUE.split(";"));
 	public static List<String> electricSensorsValue = Arrays.asList(Configuration.ELECTRIC_SENSORS_VALUE.split(";"));
+	public static List<String> electricSensorsEnable = Arrays.asList(Configuration.ELECTRIC_SENSORS_ENABLE_VALUE.split(";"));
 
 	private final static List<PropertyInfo> properties = Arrays.asList(
+		/*App Config*/
+		new PropertyInfo(Configuration.APP_ENABLE_KEY, Configuration.APP_ENABLE_NAME, Configuration.APP_ENABLE_DESCRIPTION, PropertyFormat.Text, Configuration.APP_ENABLE_VALUE),
+			
 		/*Message Receiver Config*/
 		new PropertyInfo(Configuration.USER_KEY,       Configuration.USER_NAME,       Configuration.USER_DESCRIPTION,       PropertyFormat.Text, Configuration.USER_VALUE),
 		new PropertyInfo(Configuration.USER_EMAIL_KEY, Configuration.USER_EMAIL_NAME, Configuration.USER_EMAIL_DESCRIPTION, PropertyFormat.Text, Configuration.USER_EMAIL_VALUE),
@@ -37,10 +46,13 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		new PropertyInfo(Configuration.INACTIVITY_DURATION_KEY, Configuration.INACTIVITY_DURATION_NAME, Configuration.INACTIVITY_DURATION_DESCRIPTION, PropertyFormat.Text, Configuration.INACTIVITY_DURATION_VALUE),
 		
 		/*Report Sensors Config*/
-		new PropertyInfo(Configuration.CONTACT_SENSORS_ID_KEY,  Configuration.CONTACT_SENSORS_ID_NAME,  Configuration.CONTACT_SENSORS_ID_DESCRIPTION,  PropertyFormat.Text, Configuration.CONTACT_SENSORS_ID_VALUE),
-		new PropertyInfo(Configuration.CONTACT_SENSORS_KEY,     Configuration.CONTACT_SENSORS_NAME,     Configuration.CONTACT_SENSORS_DESCRIPTION,     PropertyFormat.Text, Configuration.CONTACT_SENSORS_VALUE),
-		new PropertyInfo(Configuration.ELECTRIC_SENSORS_ID_KEY, Configuration.ELECTRIC_SENSORS_ID_NAME, Configuration.ELECTRIC_SENSORS_ID_DESCRIPTION, PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_ID_VALUE),
-		new PropertyInfo(Configuration.ELECTRIC_SENSORS_KEY,    Configuration.ELECTRIC_SENSORS_NAME,    Configuration.ELECTRIC_SENSORS_DESCRIPTION,    PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_VALUE)
+		new PropertyInfo(Configuration.CONTACT_SENSORS_ID_KEY,      Configuration.CONTACT_SENSORS_ID_NAME,      Configuration.CONTACT_SENSORS_ID_DESCRIPTION,      PropertyFormat.Text, Configuration.CONTACT_SENSORS_ID_VALUE),
+		new PropertyInfo(Configuration.CONTACT_SENSORS_KEY,         Configuration.CONTACT_SENSORS_NAME,         Configuration.CONTACT_SENSORS_DESCRIPTION,         PropertyFormat.Text, Configuration.CONTACT_SENSORS_VALUE),
+		new PropertyInfo(Configuration.CONTACT_SENSORS_ENABLE_KEY,  Configuration.CONTACT_SENSORS_ENABLE_NAME,  Configuration.CONTACT_SENSORS_ENABLE_DESCRIPTION,  PropertyFormat.Text, Configuration.CONTACT_SENSORS_ENABLE_VALUE),
+		
+		new PropertyInfo(Configuration.ELECTRIC_SENSORS_ID_KEY,     Configuration.ELECTRIC_SENSORS_ID_NAME,     Configuration.ELECTRIC_SENSORS_ID_DESCRIPTION,     PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_ID_VALUE),
+		new PropertyInfo(Configuration.ELECTRIC_SENSORS_KEY,        Configuration.ELECTRIC_SENSORS_NAME,        Configuration.ELECTRIC_SENSORS_DESCRIPTION,        PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_VALUE),
+		new PropertyInfo(Configuration.ELECTRIC_SENSORS_ENABLE_KEY, Configuration.ELECTRIC_SENSORS_ENABLE_NAME, Configuration.ELECTRIC_SENSORS_ENABLE_DESCRIPTION, PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_ENABLE_VALUE)
 	);
 
 	public SmartReportEnabler() {
@@ -49,6 +61,10 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 
 	@Override
 	public void propertyChanged(String propertyName, String propertyValue) {
+		/*App Config*/
+		if (propertyName.equals(Configuration.APP_ENABLE_KEY))
+			appEnable = propertyValue;
+		
 		/*Message Receiver Config*/
 		if (propertyName.equals(Configuration.USER_KEY))
 			userName = propertyValue;
@@ -70,30 +86,54 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 			contactSensorsId = Arrays.asList(propertyValue.split(","));
 		if (propertyName.equals(Configuration.CONTACT_SENSORS_KEY))
 			contactSensorsValue = Arrays.asList(propertyValue.split(","));
+		if (propertyName.equals(Configuration.CONTACT_SENSORS_ENABLE_KEY))
+			contactSensorsEnable = Arrays.asList(propertyValue.split(","));
 		
 		if (propertyName.equals(Configuration.ELECTRIC_SENSORS_ID_KEY))
 			electricSensorsId = Arrays.asList(propertyValue.split(","));
 		if (propertyName.equals(Configuration.ELECTRIC_SENSORS_KEY))
 			electricSensorsValue = Arrays.asList(propertyValue.split(","));
+		if (propertyName.equals(Configuration.ELECTRIC_SENSORS_ENABLE_KEY))
+			electricSensorsEnable = Arrays.asList(propertyValue.split(","));
 	}
 
 	@Override
 	public boolean isValid(String propertyName, String propertyValue) {
-		if (propertyName.equals(Configuration.USER_KEY) 
+		if (propertyName.equals(Configuration.APP_ENABLE_KEY)
+			
+			|| propertyName.equals(Configuration.USER_KEY) 
 			|| propertyName.equals(Configuration.USER_EMAIL_KEY) 
 			|| propertyName.equals(Configuration.USER_PHONE_KEY) 
+			
 			|| propertyName.equals(Configuration.TRIGGER_SENSOR_ID_KEY) 
 			|| propertyName.equals(Configuration.TRIGGER_SENSOR_KEY) 
+			
 			|| propertyName.equals(Configuration.CONTACT_SENSORS_ID_KEY) 
 			|| propertyName.equals(Configuration.CONTACT_SENSORS_KEY) 
+			|| propertyName.equals(Configuration.CONTACT_SENSORS_ENABLE_KEY) 
+			
 			|| propertyName.equals(Configuration.ELECTRIC_SENSORS_ID_KEY) 
 			|| propertyName.equals(Configuration.ELECTRIC_SENSORS_KEY)
+			|| propertyName.equals(Configuration.ELECTRIC_SENSORS_ENABLE_KEY)
 		) {
 			return true;
 		}
 		return false;
 	}
 
+	/***
+	 * Getter and Setters 
+	 * 
+	 * Message Receiver Config
+	 * ***/
+	public static String getAppEnable() {
+		return appEnable;
+	}
+
+	public static void setAppEnable(String appEnable) {
+		SmartReportEnabler.appEnable = appEnable;
+	}
+	
 	/***
 	 * Getter and Setters 
 	 * 
@@ -188,5 +228,21 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 
 	public static void setElectricSensorsValue(List<String> electricSensorsValue) {
 		SmartReportEnabler.electricSensorsValue = electricSensorsValue;
+	}
+
+	public static List<String> getContactSensorsEnable() {
+		return contactSensorsEnable;
+	}
+
+	public static void setContactSensorsEnable(List<String> contactSensorsEnable) {
+		SmartReportEnabler.contactSensorsEnable = contactSensorsEnable;
+	}
+
+	public static List<String> getElectricSensorsEnable() {
+		return electricSensorsEnable;
+	}
+
+	public static void setElectricSensorsEnable(List<String> electricSensorsEnable) {
+		SmartReportEnabler.electricSensorsEnable = electricSensorsEnable;
 	}
 }

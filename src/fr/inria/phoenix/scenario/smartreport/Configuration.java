@@ -5,6 +5,14 @@ public class Configuration {
 	public static final String APP_NAME = "SmartReport";
 
 	/***
+	 * Configuration de l'application 
+	 * ***/
+	public static final String APP_ENABLE_KEY = "appEnable";
+	public static final String APP_ENABLE_NAME = "Enable Reporting";
+	public static final String APP_ENABLE_DESCRIPTION = "Enable the reporting";
+	public static final String APP_ENABLE_VALUE = "true";
+	
+	/***
 	 * Configuration de l'utilisateur du device qui recevra les notifications
 	 * ***/
 	public static final String USER_KEY = "userName";
@@ -54,6 +62,11 @@ public class Configuration {
 	public static final String CONTACT_SENSORS_DESCRIPTION = "List of expected values";
 	public static final String CONTACT_SENSORS_VALUE = "true;false";
 	
+	public static final String CONTACT_SENSORS_ENABLE_KEY = "contactSensorsEnable";
+	public static final String CONTACT_SENSORS_ENABLE_NAME = "Enable Contact Sensors List";
+	public static final String CONTACT_SENSORS_ENABLE_DESCRIPTION = "List of enabled contact sensors";
+	public static final String CONTACT_SENSORS_ENABLE_VALUE = "true;false";
+	
 	public static final String ELECTRIC_SENSORS_ID_KEY = "electricSensorsId";
 	public static final String ELECTRIC_SENSORS_ID_NAME = "Electric Sensors Id";
 	public static final String ELECTRIC_SENSORS_ID_DESCRIPTION = "List of eletric sensors to report";
@@ -63,4 +76,9 @@ public class Configuration {
 	public static final String ELECTRIC_SENSORS_NAME = "Electric Sensors Value";
 	public static final String ELECTRIC_SENSORS_DESCRIPTION = "List of expected values";
 	public static final String ELECTRIC_SENSORS_VALUE = "0.2;0.35";
+	
+	public static final String ELECTRIC_SENSORS_ENABLE_KEY = "electricSensorsEnable";
+	public static final String ELECTRIC_SENSORS_ENABLE_NAME = "Electric Sensors Enabled";
+	public static final String ELECTRIC_SENSORS_ENABLE_DESCRIPTION = "List of enabled eletric sensors";
+	public static final String ELECTRIC_SENSORS_ENABLE_VALUE = "true;true";
 }

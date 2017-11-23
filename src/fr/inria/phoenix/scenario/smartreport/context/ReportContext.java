@@ -23,7 +23,8 @@ public class ReportContext extends AbstractReportContext {
 		InactivityLevelFromInactivitySensor inactivityLevelFromInactivitySensor,
 		DiscoverForInactivityLevelFromInactivitySensor discover
 	) {
-		if (inactivityLevelFromInactivitySensor.value() > new Float(SmartReportEnabler.getInactivityDuration())
+		if (Boolean.valueOf(SmartReportEnabler.getAppEnable()) == true
+			&& inactivityLevelFromInactivitySensor.value() > new Float(SmartReportEnabler.getInactivityDuration())
 			&& discover.inactivitySensors().anyOne().getLastInteraction().getDeviceId()
 			   .equals(SmartReportEnabler.getTriggerSensorId())
 			&& discover.inactivitySensors().anyOne().getLastInteraction().getActionType()
@@ -44,8 +45,9 @@ public class ReportContext extends AbstractReportContext {
 				if (index != -1 && index < SmartReportEnabler.getContactSensorsId().size()) {
 					String sensorIndex = SmartReportEnabler.getContactSensorsId().get(index);
 					String sensorValue = SmartReportEnabler.getContactSensorsValue().get(index);
+					Boolean sensorEnable = Boolean.valueOf(SmartReportEnabler.getContactSensorsEnable().get(index));
 					
-					if (sensor.getContact() != null && sensor.getContact() != Boolean.valueOf(sensorValue))
+					if (sensorEnable == true && sensor.getContact() != null && sensor.getContact() != Boolean.valueOf(sensorValue))
 						sensorReports.add(new SensorReport(sensor.id(), sensorIndex, sensorValue, sensor.getContact().toString()));
 				}
 			}
@@ -58,8 +60,9 @@ public class ReportContext extends AbstractReportContext {
 				if (index != -1 && index < SmartReportEnabler.getElectricSensorsId().size()) {
 					String sensorIndex = SmartReportEnabler.getElectricSensorsId().get(index);
 					String sensorValue = SmartReportEnabler.getElectricSensorsValue().get(index);
-					
-					if (sensor.getConsumption() != null && sensor.getConsumption() > new Float(sensorValue))
+					Boolean sensorEnable = Boolean.valueOf(SmartReportEnabler.getElectricSensorsEnable().get(index));
+
+					if (sensorEnable == true && sensor.getConsumption() != null && sensor.getConsumption() > new Float(sensorValue))
 						sensorReports.add(new SensorReport(sensor.id(), sensorIndex, sensorValue, sensor.getConsumption().toString()));
 				}
 			}
