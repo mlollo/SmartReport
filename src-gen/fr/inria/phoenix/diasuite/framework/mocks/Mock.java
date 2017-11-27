@@ -4,6 +4,7 @@ import fr.inria.diagen.core.ServiceConfiguration;
 import fr.inria.phoenix.diasuite.framework.misc.AppComponentBinder;
 import fr.inria.phoenix.diasuite.framework.controller.reportcontroller.AbstractReportController;
 import fr.inria.phoenix.diasuite.framework.context.reportcontext.AbstractReportContext;
+import fr.inria.phoenix.diasuite.framework.context.triggercontext.AbstractTriggerContext;
 
 /**
  * Use this class to test your DiaSuite application.
@@ -94,6 +95,9 @@ public final class Mock extends AppComponentBinder {
     }
     public Class<? extends AbstractReportContext> getReportContextClass() {
         return delegate.getReportContextClass();
+    }
+    public Class<? extends AbstractTriggerContext> getTriggerContextClass() {
+        return delegate.getTriggerContextClass();
     }
     
     // Mocks constructor for all devices

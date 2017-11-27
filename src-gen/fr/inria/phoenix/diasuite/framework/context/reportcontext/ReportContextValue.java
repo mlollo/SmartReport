@@ -7,10 +7,9 @@ import java.io.Serializable;
  *
  * <pre>
  * context ReportContext as SensorReport[] {
- * 	when provided inactivityLevel from InactivitySensor
+ * 	when provided TriggerContext
  * 	   		get contact from ContactSensor,
- * 	   		consumption from ElectricMeter,
- * 	   		lastInteraction from InactivitySensor
+ * 	   		consumption from ElectricMeter
  * 	maybe publish;
  * }
  * </pre>

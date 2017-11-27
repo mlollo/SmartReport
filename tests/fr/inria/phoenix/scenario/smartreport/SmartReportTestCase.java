@@ -49,6 +49,9 @@ public class SmartReportTestCase {
 		shutdown();
 	}
 	
+	/***
+	 * Test unitaire qui vérifie si l'option activer le reporting fonctionne
+	 * ***/
 	@Test
 	 public void testAppEnable() {
 	     /*Configuration*/
@@ -77,6 +80,9 @@ public class SmartReportTestCase {
 		 assertTrue(messengerMock.expectSendMessage());
 	}
 	
+	/***
+	 * Test unitaire qui vérifie si l'option désactiver le reporting fonctionne
+	 * ***/
 	@Test
 	 public void testAppDisable() {
 	     /*Configuration*/
@@ -105,7 +111,9 @@ public class SmartReportTestCase {
 		 assertTrue(!messengerMock.expectSendMessage());
 	}
 	
-	
+	/***
+	 * Test unitaire qui vérifie si l'option activer les capteurs fonctionne
+	 * ***/
 	@Test
 	 public void testContactSensorsEnabled() {
 	     /*Configuration*/
@@ -135,6 +143,9 @@ public class SmartReportTestCase {
 		 assertTrue(messengerMock.expectSendMessage());
 	}
 	
+	/***
+	 * Test unitaire qui vérifie si l'option désactiver les capteurs fonctionne
+	 * ***/
 	@Test
 	 public void testContactSensorsDisabled() {
 	     /*Configuration*/
@@ -163,7 +174,9 @@ public class SmartReportTestCase {
 		 assertTrue(messengerMock.expectSendMessage());
 	}
 	
-	
+	/***
+	 * Test unitaire qui vérifie le fonctionnement classique du reporting
+	 * ***/
 	 @Test
 	 public void testSendReport() {
 	     /*Configuration*/
@@ -192,6 +205,10 @@ public class SmartReportTestCase {
 		 assertTrue(messengerMock.expectSendMessage());
 	}
 	 
+		
+	/***
+	 * Test unitaire qui vérifie si un capteur sur deux est dans l'état souhaité
+	 * ***/
 	 @Test
 	 public void testSendReportOneOfEach() {
 	     /*Configuration*/
@@ -220,6 +237,10 @@ public class SmartReportTestCase {
 		 assertTrue(messengerMock.expectSendMessage());
 	}
 
+		
+	/***
+	 * Test unitaire qui vérifie si tous les capteurs sont des les états souhaités
+	 * ***/
 	 @Test
 	 public void testReportOk() {
 	     /*Configuration*/
@@ -248,6 +269,10 @@ public class SmartReportTestCase {
 		 assertFalse(messengerMock.expectSendMessage(new Message(new Contact(), new String(), new String(), null)));
 	}
 	 
+		
+	/***
+	 * Test unitaire qui vérifie si la dernière intéraction n'était pas le trigger sensor
+	 * ***/
 	 @Test
 	 public void testReportLastInteraction() {
 	     /*Configuration*/
@@ -276,7 +301,10 @@ public class SmartReportTestCase {
 		 assertTrue(!messengerMock.expectSendMessage());
 	}
 	 
-	 
+		
+	/***
+	 * Test unitaire qui vérifie si qu'aucun réporting n'est enclenché si l'inactivity level est infèrieur au délai d'inactivité configurée
+	 * ***/
 	 @Test
 	 public void testReportNoInactivity() {
 	     /*Configuration*/
@@ -305,6 +333,10 @@ public class SmartReportTestCase {
 		 assertTrue(!messengerMock.expectSendMessage());
 	}
 	 
+		
+	/***
+	 * Test unitaire qui vérifie si des sensor ne renvoie rien, ou ne sont plus alimentés
+	 * ***/
 	 @Test
 	 public void testReportLessSensor() {
 	     /*Configuration*/
