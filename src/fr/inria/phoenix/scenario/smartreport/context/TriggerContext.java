@@ -2,6 +2,7 @@ package fr.inria.phoenix.scenario.smartreport.context;
 
 import fr.inria.diagen.core.ServiceConfiguration;
 import fr.inria.phoenix.diasuite.framework.context.triggercontext.AbstractTriggerContext;
+import fr.inria.phoenix.diasuite.framework.datatype.interaction.Interaction;
 import fr.inria.phoenix.diasuite.framework.datatype.interactiontype.InteractionType;
 import fr.inria.phoenix.diasuite.framework.device.inactivitysensor.InactivityLevelFromInactivitySensor;
 import fr.inria.phoenix.scenario.smartreport.SmartReportEnabler;
@@ -18,12 +19,10 @@ public class TriggerContext extends AbstractTriggerContext {
 			InactivityLevelFromInactivitySensor inactivityLevelFromInactivitySensor,
 			DiscoverForInactivityLevelFromInactivitySensor discover
 	) {
-		if (Boolean.valueOf(SmartReportEnabler.getAppEnable()) == true
-			&& inactivityLevelFromInactivitySensor.value() > Float.valueOf(SmartReportEnabler.getInactivityDuration())
-			&& discover.inactivitySensors().anyOne().getLastInteraction().getDeviceId()
-			   .equals(SmartReportEnabler.getTriggerSensorId())
-			&& discover.inactivitySensors().anyOne().getLastInteraction().getActionType()
-			   .equals(Boolean.valueOf(SmartReportEnabler.getTriggerSensorValue()) ? InteractionType.CLOSURE : InteractionType.OPENNING)
+		Interaction lastInteraction = discover.inactivitySensors().anyOne().getLastInteraction();
+		if (inactivityLevelFromInactivitySensor.value() > SmartReportEnabler.getInactivityThreshold()
+			&& lastInteraction.getDeviceId().equals(SmartReportEnabler.getTriggerSensorId())
+			&& lastInteraction.getActionType().equals(InteractionType.CLOSURE)
 		) {
 			return new TriggerContextValuePublishable(true, true);
 		}

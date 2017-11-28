@@ -13,8 +13,7 @@ import fr.inria.phoenix.diasuite.framework.device.inactivitysensor.InactivityLev
  * <pre>
  * context TriggerContext as Boolean {
  * 	when provided inactivityLevel from InactivitySensor
- * 	   		get lastInteraction from InactivitySensor,
- * 	   		on from Light
+ * 	   		get lastInteraction from InactivitySensor
  * 	maybe publish;
  * }
  * </pre>
@@ -133,8 +132,7 @@ public abstract class AbstractTriggerContext extends Service {
      * 
      * <pre>
      * when provided inactivityLevel from InactivitySensor
-     * 	   		get lastInteraction from InactivitySensor,
-     * 	   		on from Light
+     * 	   		get lastInteraction from InactivitySensor
      * 	maybe publish;
      * </pre>
      * 
@@ -398,27 +396,18 @@ public abstract class AbstractTriggerContext extends Service {
      * 
      * <code>
      * when provided inactivityLevel from InactivitySensor
-     * 	   		get lastInteraction from InactivitySensor,
-     * 	   		on from Light
+     * 	   		get lastInteraction from InactivitySensor
      * 	maybe publish;
      * </code>
      */
     protected final class DiscoverForInactivityLevelFromInactivitySensor {
         private final InactivitySensorDiscovererForInactivityLevelFromInactivitySensor inactivitySensorDiscoverer = new InactivitySensorDiscovererForInactivityLevelFromInactivitySensor(AbstractTriggerContext.this);
-        private final LightDiscovererForInactivityLevelFromInactivitySensor lightDiscoverer = new LightDiscovererForInactivityLevelFromInactivitySensor(AbstractTriggerContext.this);
         
         /**
          * @return a {@link InactivitySensorDiscovererForInactivityLevelFromInactivitySensor} object to discover <code>InactivitySensor</code> devices
          */
         public InactivitySensorDiscovererForInactivityLevelFromInactivitySensor inactivitySensors() {
             return inactivitySensorDiscoverer;
-        }
-        
-        /**
-         * @return a {@link LightDiscovererForInactivityLevelFromInactivitySensor} object to discover <code>Light</code> devices
-         */
-        public LightDiscovererForInactivityLevelFromInactivitySensor lights() {
-            return lightDiscoverer;
         }
     }
     
@@ -606,186 +595,6 @@ public abstract class AbstractTriggerContext extends Service {
          */
         public java.lang.String id() {
             return (java.lang.String) callGetValue("id");
-        }
-    }
-    
-    /**
-     * Discover object that will exposes the <code>Light</code> devices to get their sources for the
-     * <code>when provided inactivityLevel from InactivitySensor</code> interaction contract.
-     * <p>
-     * ------
-     * Light
-     * ------
-     * 
-     * <pre>
-     * device Light extends Appliance {
-     * }
-     * </pre>
-     */
-    protected final static class LightDiscovererForInactivityLevelFromInactivitySensor {
-        private Service serviceParent;
-        
-        private LightDiscovererForInactivityLevelFromInactivitySensor(Service serviceParent) {
-            super();
-            this.serviceParent = serviceParent;
-        }
-        
-        private LightCompositeForInactivityLevelFromInactivitySensor instantiateComposite() {
-            return new LightCompositeForInactivityLevelFromInactivitySensor(serviceParent);
-        }
-        
-        /**
-         * Returns a composite of all accessible <code>Light</code> devices
-         * 
-         * @return a {@link LightCompositeForInactivityLevelFromInactivitySensor} object composed of all discoverable <code>Light</code>
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor all() {
-            return instantiateComposite();
-        }
-        
-        /**
-         * Returns a proxy to one out of all accessible <code>Light</code> devices
-         * 
-         * @return a {@link LightProxyForInactivityLevelFromInactivitySensor} object pointing to a random discoverable <code>Light</code> device
-         */
-        public LightProxyForInactivityLevelFromInactivitySensor anyOne() {
-            return all().anyOne();
-        }
-        
-        /**
-         * Returns a composite of all accessible <code>Light</code> devices whose attribute <code>id</code> matches a given value.
-         * 
-         * @param id The <code>id<code> attribute value to match.
-         * @return a {@link LightCompositeForInactivityLevelFromInactivitySensor} object composed of all matching <code>Light</code> devices
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor whereId(java.lang.String id) throws CompositeException {
-            return instantiateComposite().andId(id);
-        }
-        
-        /**
-         * Returns a composite of all accessible <code>Light</code> devices whose attribute <code>location</code> matches a given value.
-         * 
-         * @param location The <code>location<code> attribute value to match.
-         * @return a {@link LightCompositeForInactivityLevelFromInactivitySensor} object composed of all matching <code>Light</code> devices
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor whereLocation(java.lang.String location) throws CompositeException {
-            return instantiateComposite().andLocation(location);
-        }
-        
-        /**
-         * Returns a composite of all accessible <code>Light</code> devices whose attribute <code>user</code> matches a given value.
-         * 
-         * @param user The <code>user<code> attribute value to match.
-         * @return a {@link LightCompositeForInactivityLevelFromInactivitySensor} object composed of all matching <code>Light</code> devices
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor whereUser(java.lang.String user) throws CompositeException {
-            return instantiateComposite().andUser(user);
-        }
-    }
-    
-    /**
-     * A composite of several <code>Light</code> devices to get their sources for the
-     * <code>when provided inactivityLevel from InactivitySensor</code> interaction contract.
-     * <p>
-     * ------
-     * Light
-     * ------
-     * 
-     * <pre>
-     * device Light extends Appliance {
-     * }
-     * </pre>
-     */
-    protected final static class LightCompositeForInactivityLevelFromInactivitySensor extends fr.inria.diagen.core.service.composite.Composite<LightProxyForInactivityLevelFromInactivitySensor> {
-        private LightCompositeForInactivityLevelFromInactivitySensor(Service serviceParent) {
-            super(serviceParent, "/Device/Device/PhysicalDevice/Appliance/Light/");
-        }
-        
-        @Override
-        protected LightProxyForInactivityLevelFromInactivitySensor instantiateProxy(RemoteServiceInfo rsi) {
-            return new LightProxyForInactivityLevelFromInactivitySensor(service, rsi);
-        }
-        
-        /**
-         * Returns this composite in which a filter was set to the attribute <code>id</code>.
-         * 
-         * @param id The <code>id<code> attribute value to match.
-         * @return this {@link LightCompositeForInactivityLevelFromInactivitySensor}, filtered using the attribute <code>id</code>.
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor andId(java.lang.String id) throws CompositeException {
-            filterByAttribute("id", id);
-            return this;
-        }
-        
-        /**
-         * Returns this composite in which a filter was set to the attribute <code>location</code>.
-         * 
-         * @param location The <code>location<code> attribute value to match.
-         * @return this {@link LightCompositeForInactivityLevelFromInactivitySensor}, filtered using the attribute <code>location</code>.
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor andLocation(java.lang.String location) throws CompositeException {
-            filterByAttribute("location", location);
-            return this;
-        }
-        
-        /**
-         * Returns this composite in which a filter was set to the attribute <code>user</code>.
-         * 
-         * @param user The <code>user<code> attribute value to match.
-         * @return this {@link LightCompositeForInactivityLevelFromInactivitySensor}, filtered using the attribute <code>user</code>.
-         */
-        public LightCompositeForInactivityLevelFromInactivitySensor andUser(java.lang.String user) throws CompositeException {
-            filterByAttribute("user", user);
-            return this;
-        }
-    }
-    
-    /**
-     * A proxy to one <code>Light</code> device to get its sources for the
-     * <code>when provided inactivityLevel from InactivitySensor</code> interaction contract.
-     * <p>
-     * ------
-     * Light
-     * ------
-     * 
-     * <pre>
-     * device Light extends Appliance {
-     * }
-     * </pre>
-     */
-    protected final static class LightProxyForInactivityLevelFromInactivitySensor extends Proxy {
-        private LightProxyForInactivityLevelFromInactivitySensor(Service service, RemoteServiceInfo remoteServiceInfo) {
-            super(service, remoteServiceInfo);
-        }
-        
-        /**
-         * Returns the value of the <code>on</code> source of this <code>Light</code> device
-         * 
-         * @return the value of the <code>on</code> source
-         */
-        public java.lang.Boolean getOn() throws InvocationException {
-            return (java.lang.Boolean) callGetValue("on");
-        }
-        
-        /**
-         * @return the value of the <code>id</code> attribute
-         */
-        public java.lang.String id() {
-            return (java.lang.String) callGetValue("id");
-        }
-        
-        /**
-         * @return the value of the <code>location</code> attribute
-         */
-        public java.lang.String location() {
-            return (java.lang.String) callGetValue("location");
-        }
-        
-        /**
-         * @return the value of the <code>user</code> attribute
-         */
-        public java.lang.String user() {
-            return (java.lang.String) callGetValue("user");
         }
     }
     // End of discover object for inactivityLevel from InactivitySensor

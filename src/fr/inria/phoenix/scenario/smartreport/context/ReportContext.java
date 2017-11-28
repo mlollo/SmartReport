@@ -26,8 +26,10 @@ public class ReportContext extends AbstractReportContext {
 
 		Iterator<ContactSensorProxyForTriggerContext> iteratorContactSensors = discover.contactSensors().all().iterator();
 		Iterator<ElectricMeterProxyForTriggerContext> iteratorElectricSensors = discover.electricMeters().all().iterator();
+		Iterator<LightProxyForTriggerContext> iteratorLightSensors = discover.lights().all().iterator();
 		System.out.println(SmartReportEnabler.getContactSensorsId());
 		System.out.println(SmartReportEnabler.getElectricSensorsId());
+		System.out.println(SmartReportEnabler.getLightSensorsId());
 
 		while (iteratorContactSensors.hasNext()) {
 		
@@ -35,11 +37,11 @@ public class ReportContext extends AbstractReportContext {
 			int index = SmartReportEnabler.getContactSensorsId().indexOf(sensor.id());
 			
 			if (index != -1 && index < SmartReportEnabler.getContactSensorsId().size()) {
-				String sensorValue = SmartReportEnabler.getContactSensorsValue().get(index);
-				Boolean sensorEnable = Boolean.valueOf(SmartReportEnabler.getContactSensorsEnable().get(index));
+				Boolean sensorValue = SmartReportEnabler.getContactSensorsValue().get(index);
+				Boolean sensorEnable = SmartReportEnabler.getContactSensorsEnable().get(index);
 				
-				if (sensorEnable == true && sensor.getContact() != null && sensor.getContact() != Boolean.valueOf(sensorValue)) {
-					sensorReports.add(new SensorReport(sensor.id(), "contact", sensorValue, sensor.getContact().toString()));
+				if (sensorEnable == true && sensor.getContact() != null && sensor.getContact() != sensorValue) {
+					sensorReports.add(new SensorReport(sensor.id(), "contact", sensorValue.toString(), sensor.getContact().toString()));
 				}
 			}
 		}
@@ -50,11 +52,26 @@ public class ReportContext extends AbstractReportContext {
 			int index = SmartReportEnabler.getElectricSensorsId().indexOf(sensor.id());
 			
 			if (index != -1 && index < SmartReportEnabler.getElectricSensorsId().size()) {
-				String sensorValue = SmartReportEnabler.getElectricSensorsValue().get(index);
-				Boolean sensorEnable = Boolean.valueOf(SmartReportEnabler.getElectricSensorsEnable().get(index));
+				Float sensorValue = SmartReportEnabler.getElectricSensorsValue().get(index);
+				Boolean sensorEnable = SmartReportEnabler.getElectricSensorsEnable().get(index);
 
-				if (sensorEnable == true && sensor.getConsumption() != null && sensor.getConsumption() > new Float(sensorValue)) {
-					sensorReports.add(new SensorReport(sensor.id(), "electric", sensorValue, sensor.getConsumption().toString()));
+				if (sensorEnable == true && sensor.getConsumption() != null && sensor.getConsumption() > sensorValue) {
+					sensorReports.add(new SensorReport(sensor.id(), "electric", sensorValue.toString(), sensor.getConsumption().toString()));
+				}
+			}
+		}
+		
+		while (iteratorLightSensors.hasNext()) {
+			
+			LightProxyForTriggerContext sensor = iteratorLightSensors.next();
+			int index = SmartReportEnabler.getLightSensorsId().indexOf(sensor.id());
+			
+			if (index != -1 && index < SmartReportEnabler.getLightSensorsId().size()) {
+				Boolean sensorValue = SmartReportEnabler.getLightSensorsValue().get(index);
+				Boolean sensorEnable = SmartReportEnabler.getLightSensorsEnable().get(index);
+
+				if (sensorEnable == true && sensor.getOn() != null && sensor.getOn() == sensorValue) {
+					sensorReports.add(new SensorReport(sensor.id(), "light", sensorValue.toString(), sensor.getOn().toString()));
 				}
 			}
 		}

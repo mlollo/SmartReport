@@ -1,5 +1,6 @@
 package fr.inria.phoenix.scenario.smartreport;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,9 +9,6 @@ import fr.inria.diagen.core.enabler.PropertyFormat;
 import fr.inria.diagen.core.enabler.PropertyInfo;
 
 public class SmartReportEnabler extends AbstractApplicationEnabler {
-
-	/*App Config*/
-	public static String appEnable = Configuration.APP_ENABLE_VALUE;
 	
 	/*Message Receiver Config*/
 	public static String userName = Configuration.USER_VALUE;
@@ -19,8 +17,7 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 	
 	/*Trigger Sensor Config*/
 	public static String triggerSensorId = Configuration.TRIGGER_SENSOR_ID_VALUE;
-	public static String triggerSensorValue = Configuration.TRIGGER_SENSOR_VALUE;
-	public static String inactivityDuration = Configuration.INACTIVITY_DURATION_VALUE;
+	public static String inactivityThreshold = Configuration.INACTIVITY_THRESHOLD_VALUE;
 
 	/*Report Sensors Config*/
 	public static List<String> contactSensorsId = Arrays.asList(Configuration.CONTACT_SENSORS_ID_VALUE.split(";"));
@@ -30,11 +27,12 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 	public static List<String> electricSensorsId = Arrays.asList(Configuration.ELECTRIC_SENSORS_ID_VALUE.split(";"));
 	public static List<String> electricSensorsValue = Arrays.asList(Configuration.ELECTRIC_SENSORS_VALUE.split(";"));
 	public static List<String> electricSensorsEnable = Arrays.asList(Configuration.ELECTRIC_SENSORS_ENABLE_VALUE.split(";"));
+	
+	public static List<String> lightSensorsId = Arrays.asList(Configuration.LIGHT_SENSORS_ID_VALUE.split(";"));
+	public static List<String> lightSensorsValue = Arrays.asList(Configuration.LIGHT_SENSORS_VALUE.split(";"));
+	public static List<String> lightSensorsEnable = Arrays.asList(Configuration.LIGHT_SENSORS_ENABLE_VALUE.split(";"));
 
 	private final static List<PropertyInfo> properties = Arrays.asList(
-		/*App Config*/
-		new PropertyInfo(Configuration.APP_ENABLE_KEY, Configuration.APP_ENABLE_NAME, Configuration.APP_ENABLE_DESCRIPTION, PropertyFormat.Text, Configuration.APP_ENABLE_VALUE),
-			
 		/*Message Receiver Config*/
 		new PropertyInfo(Configuration.USER_KEY,       Configuration.USER_NAME,       Configuration.USER_DESCRIPTION,       PropertyFormat.Text, Configuration.USER_VALUE),
 		new PropertyInfo(Configuration.USER_EMAIL_KEY, Configuration.USER_EMAIL_NAME, Configuration.USER_EMAIL_DESCRIPTION, PropertyFormat.Text, Configuration.USER_EMAIL_VALUE),
@@ -42,8 +40,7 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		
 		/*Trigger Sensor Config*/
 		new PropertyInfo(Configuration.TRIGGER_SENSOR_ID_KEY,   Configuration.TRIGGER_SENSOR_ID_NAME,   Configuration.TRIGGER_SENSOR_ID_DESCRIPTION,   PropertyFormat.Text, Configuration.TRIGGER_SENSOR_ID_VALUE),
-		new PropertyInfo(Configuration.TRIGGER_SENSOR_KEY,      Configuration.TRIGGER_SENSOR_NAME,      Configuration.TRIGGER_SENSOR_DESCRIPTION,      PropertyFormat.Text, Configuration.TRIGGER_SENSOR_VALUE),
-		new PropertyInfo(Configuration.INACTIVITY_DURATION_KEY, Configuration.INACTIVITY_DURATION_NAME, Configuration.INACTIVITY_DURATION_DESCRIPTION, PropertyFormat.Text, Configuration.INACTIVITY_DURATION_VALUE),
+		new PropertyInfo(Configuration.INACTIVITY_THRESHOLD_KEY, Configuration.INACTIVITY_THRESHOLD_NAME, Configuration.INACTIVITY_THRESHOLD_DESCRIPTION, PropertyFormat.Text, Configuration.INACTIVITY_THRESHOLD_VALUE),
 		
 		/*Report Sensors Config*/
 		new PropertyInfo(Configuration.CONTACT_SENSORS_ID_KEY,      Configuration.CONTACT_SENSORS_ID_NAME,      Configuration.CONTACT_SENSORS_ID_DESCRIPTION,      PropertyFormat.Text, Configuration.CONTACT_SENSORS_ID_VALUE),
@@ -52,7 +49,11 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		
 		new PropertyInfo(Configuration.ELECTRIC_SENSORS_ID_KEY,     Configuration.ELECTRIC_SENSORS_ID_NAME,     Configuration.ELECTRIC_SENSORS_ID_DESCRIPTION,     PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_ID_VALUE),
 		new PropertyInfo(Configuration.ELECTRIC_SENSORS_KEY,        Configuration.ELECTRIC_SENSORS_NAME,        Configuration.ELECTRIC_SENSORS_DESCRIPTION,        PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_VALUE),
-		new PropertyInfo(Configuration.ELECTRIC_SENSORS_ENABLE_KEY, Configuration.ELECTRIC_SENSORS_ENABLE_NAME, Configuration.ELECTRIC_SENSORS_ENABLE_DESCRIPTION, PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_ENABLE_VALUE)
+		new PropertyInfo(Configuration.ELECTRIC_SENSORS_ENABLE_KEY, Configuration.ELECTRIC_SENSORS_ENABLE_NAME, Configuration.ELECTRIC_SENSORS_ENABLE_DESCRIPTION, PropertyFormat.Text, Configuration.ELECTRIC_SENSORS_ENABLE_VALUE),
+		
+		new PropertyInfo(Configuration.LIGHT_SENSORS_ID_KEY,     Configuration.LIGHT_SENSORS_ID_NAME,     Configuration.LIGHT_SENSORS_ID_DESCRIPTION,     PropertyFormat.Text, Configuration.LIGHT_SENSORS_ID_VALUE),
+		new PropertyInfo(Configuration.LIGHT_SENSORS_KEY,        Configuration.LIGHT_SENSORS_NAME,        Configuration.LIGHT_SENSORS_DESCRIPTION,        PropertyFormat.Text, Configuration.LIGHT_SENSORS_VALUE),
+		new PropertyInfo(Configuration.LIGHT_SENSORS_ENABLE_KEY, Configuration.LIGHT_SENSORS_ENABLE_NAME, Configuration.LIGHT_SENSORS_ENABLE_DESCRIPTION, PropertyFormat.Text, Configuration.LIGHT_SENSORS_ENABLE_VALUE)
 	);
 
 	public SmartReportEnabler() {
@@ -61,9 +62,6 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 
 	@Override
 	public void propertyChanged(String propertyName, String propertyValue) {
-		/*App Config*/
-		if (propertyName.equals(Configuration.APP_ENABLE_KEY))
-			appEnable = propertyValue;
 		
 		/*Message Receiver Config*/
 		if (propertyName.equals(Configuration.USER_KEY))
@@ -76,10 +74,8 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		/*Trigger Sensor Config*/
 		if (propertyName.equals(Configuration.TRIGGER_SENSOR_ID_KEY))
 			triggerSensorId = propertyValue;
-		if (propertyName.equals(Configuration.TRIGGER_SENSOR_KEY))
-			triggerSensorValue = propertyValue;
-		if (propertyName.equals(Configuration.INACTIVITY_DURATION_KEY))
-			inactivityDuration = propertyValue;
+		if (propertyName.equals(Configuration.INACTIVITY_THRESHOLD_KEY))
+			inactivityThreshold = propertyValue;
 		
 		/*Report Sensors Config*/
 		if (propertyName.equals(Configuration.CONTACT_SENSORS_ID_KEY))
@@ -95,18 +91,23 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 			electricSensorsValue = Arrays.asList(propertyValue.split(","));
 		if (propertyName.equals(Configuration.ELECTRIC_SENSORS_ENABLE_KEY))
 			electricSensorsEnable = Arrays.asList(propertyValue.split(","));
+		
+		if (propertyName.equals(Configuration.LIGHT_SENSORS_ID_KEY))
+			lightSensorsId = Arrays.asList(propertyValue.split(","));
+		if (propertyName.equals(Configuration.LIGHT_SENSORS_KEY))
+			lightSensorsValue = Arrays.asList(propertyValue.split(","));
+		if (propertyName.equals(Configuration.LIGHT_SENSORS_ENABLE_KEY))
+			lightSensorsEnable = Arrays.asList(propertyValue.split(","));
 	}
 
 	@Override
 	public boolean isValid(String propertyName, String propertyValue) {
-		if (propertyName.equals(Configuration.APP_ENABLE_KEY)
-			
-			|| propertyName.equals(Configuration.USER_KEY) 
+		if (propertyName.equals(Configuration.USER_KEY) 
 			|| propertyName.equals(Configuration.USER_EMAIL_KEY) 
 			|| propertyName.equals(Configuration.USER_PHONE_KEY) 
 			
 			|| propertyName.equals(Configuration.TRIGGER_SENSOR_ID_KEY) 
-			|| propertyName.equals(Configuration.TRIGGER_SENSOR_KEY) 
+			|| propertyName.equals(Configuration.INACTIVITY_THRESHOLD_KEY) 
 			
 			|| propertyName.equals(Configuration.CONTACT_SENSORS_ID_KEY) 
 			|| propertyName.equals(Configuration.CONTACT_SENSORS_KEY) 
@@ -115,23 +116,14 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 			|| propertyName.equals(Configuration.ELECTRIC_SENSORS_ID_KEY) 
 			|| propertyName.equals(Configuration.ELECTRIC_SENSORS_KEY)
 			|| propertyName.equals(Configuration.ELECTRIC_SENSORS_ENABLE_KEY)
+			
+			|| propertyName.equals(Configuration.LIGHT_SENSORS_ID_KEY) 
+			|| propertyName.equals(Configuration.LIGHT_SENSORS_KEY)
+			|| propertyName.equals(Configuration.LIGHT_SENSORS_ENABLE_KEY)
 		) {
 			return true;
 		}
 		return false;
-	}
-
-	/***
-	 * Getter and Setters 
-	 * 
-	 * Message Receiver Config
-	 * ***/
-	public static String getAppEnable() {
-		return appEnable;
-	}
-
-	public static void setAppEnable(String appEnable) {
-		SmartReportEnabler.appEnable = appEnable;
 	}
 	
 	/***
@@ -175,22 +167,14 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 	public static void setTriggerSensorId(String triggerSensorId) {
 		SmartReportEnabler.triggerSensorId = triggerSensorId;
 	}
+	
 
-	public static String getTriggerSensorValue() {
-		return triggerSensorValue;
+	public static Float getInactivityThreshold() {
+		return Float.valueOf(inactivityThreshold);
 	}
 
-	public static void setTriggerSensorValue(String triggerSensorValue) {
-		SmartReportEnabler.triggerSensorValue = triggerSensorValue;
-	}
-
-
-	public static String getInactivityDuration() {
-		return inactivityDuration;
-	}
-
-	public static void setInactivityDuration(String inactivityDuration) {
-		SmartReportEnabler.inactivityDuration = inactivityDuration;
+	public static void setInactivityThreshold(String inactivityThreshold) {
+		SmartReportEnabler.inactivityThreshold = inactivityThreshold;
 	}
 
 	/***
@@ -206,8 +190,10 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		SmartReportEnabler.contactSensorsId = contactSensorsId;
 	}
 
-	public static List<String> getContactSensorsValue() {
-		return contactSensorsValue;
+	public static List<Boolean> getContactSensorsValue() {
+		List<Boolean> res = new ArrayList<>();
+		contactSensorsValue.stream().forEach(val -> { res.add(Boolean.valueOf(val)); });
+		return res;
 	}
 
 	public static void setContactSensorsValue(List<String> contactSensorsValue) {
@@ -222,27 +208,62 @@ public class SmartReportEnabler extends AbstractApplicationEnabler {
 		SmartReportEnabler.electricSensorsId = electricSensorsId;
 	}
 
-	public static List<String> getElectricSensorsValue() {
-		return electricSensorsValue;
+	public static List<Float> getElectricSensorsValue() {
+		List<Float> res = new ArrayList<>();
+		electricSensorsValue.stream().forEach(val -> { res.add(Float.valueOf(val)); });
+		return res;
 	}
 
 	public static void setElectricSensorsValue(List<String> electricSensorsValue) {
 		SmartReportEnabler.electricSensorsValue = electricSensorsValue;
 	}
 
-	public static List<String> getContactSensorsEnable() {
-		return contactSensorsEnable;
+	public static List<Boolean> getContactSensorsEnable() {
+		List<Boolean> res = new ArrayList<>();
+		contactSensorsEnable.stream().forEach(val -> { res.add(Boolean.valueOf(val)); });
+		return res;
 	}
 
 	public static void setContactSensorsEnable(List<String> contactSensorsEnable) {
 		SmartReportEnabler.contactSensorsEnable = contactSensorsEnable;
 	}
 
-	public static List<String> getElectricSensorsEnable() {
-		return electricSensorsEnable;
+	public static List<Boolean> getElectricSensorsEnable() {
+		List<Boolean> res = new ArrayList<>();
+		electricSensorsEnable.stream().forEach(val -> { res.add(Boolean.valueOf(val)); });
+		return res;
 	}
 
 	public static void setElectricSensorsEnable(List<String> electricSensorsEnable) {
 		SmartReportEnabler.electricSensorsEnable = electricSensorsEnable;
 	}
+	
+	public static List<String> getLightSensorsId() {
+		return lightSensorsId;
+	}
+
+	public static void setLightSensorsId(List<String> lightSensorsId) {
+		SmartReportEnabler.lightSensorsId = lightSensorsId;
+	}
+
+	public static List<Boolean> getLightSensorsValue() {
+		List<Boolean> res = new ArrayList<>();
+		lightSensorsValue.stream().forEach(val -> { res.add(Boolean.valueOf(val)); });
+		return res;
+	}
+
+	public static void setLightSensorsValue(List<String> lightSensorsValue) {
+		SmartReportEnabler.lightSensorsValue = lightSensorsValue;
+	}
+
+	public static List<Boolean> getLightSensorsEnable() {
+		List<Boolean> res = new ArrayList<>();
+		lightSensorsEnable.stream().forEach(val -> { res.add(Boolean.valueOf(val)); });
+		return res;
+	}
+
+	public static void setLightSensorsEnable(List<String> lightSensorsEnable) {
+		SmartReportEnabler.lightSensorsEnable = lightSensorsEnable;
+	}
+
 }

@@ -9,15 +9,15 @@ structure SensorReport {
 
 context TriggerContext as Boolean {
 	when provided inactivityLevel from InactivitySensor
-	   		get lastInteraction from InactivitySensor,
-	   		on from Light
+	   		get lastInteraction from InactivitySensor
 	maybe publish;
 }
 
 context ReportContext as SensorReport[] {
 	when provided TriggerContext
 	   		get contact from ContactSensor,
-	   		consumption from ElectricMeter
+	   		consumption from ElectricMeter,
+	   		on from Light
 	maybe publish;
 }
 

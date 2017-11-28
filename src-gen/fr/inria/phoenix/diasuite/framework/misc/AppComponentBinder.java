@@ -53,7 +53,8 @@ public abstract class AppComponentBinder extends AbstractDeploy {
      * context ReportContext as SensorReport[] {
      * 	when provided TriggerContext
      * 	   		get contact from ContactSensor,
-     * 	   		consumption from ElectricMeter
+     * 	   		consumption from ElectricMeter,
+     * 	   		on from Light
      * 	maybe publish;
      * }
      * </pre>
@@ -67,8 +68,7 @@ public abstract class AppComponentBinder extends AbstractDeploy {
      * <pre>
      * context TriggerContext as Boolean {
      * 	when provided inactivityLevel from InactivitySensor
-     * 	   		get lastInteraction from InactivitySensor,
-     * 	   		on from Light
+     * 	   		get lastInteraction from InactivitySensor
      * 	maybe publish;
      * }
      * </pre>

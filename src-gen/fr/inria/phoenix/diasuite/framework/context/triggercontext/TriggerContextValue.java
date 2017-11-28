@@ -8,8 +8,7 @@ import java.io.Serializable;
  * <pre>
  * context TriggerContext as Boolean {
  * 	when provided inactivityLevel from InactivitySensor
- * 	   		get lastInteraction from InactivitySensor,
- * 	   		on from Light
+ * 	   		get lastInteraction from InactivitySensor
  * 	maybe publish;
  * }
  * </pre>

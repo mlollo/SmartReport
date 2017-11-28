@@ -16,6 +16,7 @@ import fr.inria.phoenix.diasuite.framework.datatype.message.Message;
 import fr.inria.phoenix.diasuite.framework.mocks.ContactSensorMock;
 import fr.inria.phoenix.diasuite.framework.mocks.ElectricMeterMock;
 import fr.inria.phoenix.diasuite.framework.mocks.InactivitySensorMock;
+import fr.inria.phoenix.diasuite.framework.mocks.LightSensorMock;
 import fr.inria.phoenix.diasuite.framework.mocks.MessengerMock;
 
 
@@ -27,6 +28,8 @@ public class SmartReportTestCase {
 	ContactSensorMock contactSensor2Mock;
 	ElectricMeterMock electricMeter1Mock;
 	ElectricMeterMock electricMeter2Mock;
+	LightSensorMock lightSensor1Mock;
+	LightSensorMock lightSensor2Mock;
 	MessengerMock messengerMock;
 	
 	@Before
@@ -41,6 +44,8 @@ public class SmartReportTestCase {
 		contactSensor2Mock  = mockContactSensor(SmartReportEnabler.getContactSensorsId().get(1), location, "Tester");
 		electricMeter1Mock = mockElectricMeter(SmartReportEnabler.getElectricSensorsId().get(0), location, "Tester");
 		electricMeter2Mock = mockElectricMeter(SmartReportEnabler.getElectricSensorsId().get(1), location, "Tester");
+		lightSensor1Mock  = mockLightSensor(SmartReportEnabler.getLightSensorsId().get(0), location, "Tester");
+		lightSensor2Mock  = mockLightSensor(SmartReportEnabler.getLightSensorsId().get(1), location, "Tester");
 		messengerMock  = mockMessenger("MockMessenger");
 	}
 
@@ -50,83 +55,20 @@ public class SmartReportTestCase {
 	}
 	
 	/***
-	 * Test unitaire qui vérifie si l'option activer le reporting fonctionne
-	 * ***/
-	@Test
-	 public void testAppEnable() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
-	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
-	     /*Enable*/
-	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
-	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
-	     /*Value*/
-	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
-	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
-		 // Publish a motion value
-		 inactivitySensorMock.inactivityLevel((float) 2);
-		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
-	
-		 // Set a sensor state
-		 contactSensor1Mock.setContact(false);
-		 contactSensor2Mock.setContact(true);
-		 electricMeter1Mock.setConsumption((float)0.5);
-		 electricMeter2Mock.setConsumption((float)0.5);
-		 
-		 // And expect a message sent
-		 assertTrue(messengerMock.expectSendMessage());
-	}
-	
-	/***
-	 * Test unitaire qui vérifie si l'option désactiver le reporting fonctionne
-	 * ***/
-	@Test
-	 public void testAppDisable() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("false");
-	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
-	     /*Enable*/
-	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
-	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
-	     /*Value*/
-	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
-	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
-	     // Publish a motion value
-		 inactivitySensorMock.inactivityLevel((float) 2);
-		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
-	
-		 // Set a sensor state
-		 contactSensor1Mock.setContact(false);
-		 contactSensor2Mock.setContact(true);
-		 electricMeter1Mock.setConsumption((float)0.5);
-		 electricMeter2Mock.setConsumption((float)0.5);
-		 
-		 // And expect a message sent
-		 assertTrue(!messengerMock.expectSendMessage());
-	}
-	
-	/***
 	 * Test unitaire qui vérifie si l'option activer les capteurs fonctionne
 	 * ***/
 	@Test
 	 public void testContactSensorsEnabled() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
 	     
 		 
 	     // Publish a motion value
@@ -138,6 +80,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
+		 lightSensor1Mock.setIsAlive(true);
+		 lightSensor2Mock.setIsAlive(true);
 		 
 		 // And expect a message sent
 		 assertTrue(messengerMock.expectSendMessage());
@@ -148,18 +92,17 @@ public class SmartReportTestCase {
 	 * ***/
 	@Test
 	 public void testContactSensorsDisabled() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("false","false"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("false","false"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("false","false"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 	     // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -169,6 +112,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
+		 lightSensor1Mock.setIsAlive(true);
+		 lightSensor2Mock.setIsAlive(true);
 		 
 		 // And expect a message sent
 		 assertTrue(messengerMock.expectSendMessage());
@@ -179,18 +124,17 @@ public class SmartReportTestCase {
 	 * ***/
 	 @Test
 	 public void testSendReport() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -200,6 +144,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.1);
 		 electricMeter2Mock.setConsumption((float)0.5);
+		 lightSensor1Mock.setIsAlive(true);
+		 lightSensor2Mock.setIsAlive(false);
 		 
 		 // And expect a message sent
 		 assertTrue(messengerMock.expectSendMessage());
@@ -211,18 +157,17 @@ public class SmartReportTestCase {
 	 * ***/
 	 @Test
 	 public void testSendReportOneOfEach() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -232,6 +177,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(false);
 		 electricMeter1Mock.setConsumption((float)0.1);
 		 electricMeter2Mock.setConsumption((float)0.5);
+		 lightSensor1Mock.setIsAlive(false);
+		 lightSensor2Mock.setIsAlive(true);
 		 
 		 // And expect a message sent
 		 assertTrue(messengerMock.expectSendMessage());
@@ -243,18 +190,17 @@ public class SmartReportTestCase {
 	 * ***/
 	 @Test
 	 public void testReportOk() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -264,6 +210,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(false);
 		 electricMeter1Mock.setConsumption((float)0.1);
 		 electricMeter2Mock.setConsumption((float)0.1);
+		 lightSensor1Mock.setIsAlive(false);
+		 lightSensor2Mock.setIsAlive(false);
 		 
 		 // And expect a message sent
 		 assertFalse(messengerMock.expectSendMessage(new Message(new Contact(), new String(), new String(), null)));
@@ -275,18 +223,17 @@ public class SmartReportTestCase {
 	 * ***/
 	 @Test
 	 public void testReportLastInteraction() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getContactSensorsId().get(0), null));
@@ -296,6 +243,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
+		 lightSensor1Mock.setIsAlive(true);
+		 lightSensor2Mock.setIsAlive(true);
 		 
 		 // And expect a message sent
 		 assertTrue(!messengerMock.expectSendMessage());
@@ -307,18 +256,17 @@ public class SmartReportTestCase {
 	 * ***/
 	 @Test
 	 public void testReportNoInactivity() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 0.3);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -328,6 +276,8 @@ public class SmartReportTestCase {
 		 contactSensor2Mock.setContact(true);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.5);
+		 lightSensor1Mock.setIsAlive(true);
+		 lightSensor2Mock.setIsAlive(true);
 		 
 		 // And expect a message sent
 		 assertTrue(!messengerMock.expectSendMessage());
@@ -339,18 +289,17 @@ public class SmartReportTestCase {
 	 * ***/
 	 @Test
 	 public void testReportLessSensor() {
-	     /*Configuration*/
-	     SmartReportEnabler.setAppEnable("true");
 	     /*Trigger Sensor*/
-	     SmartReportEnabler.setInactivityDuration("0.5");
-	     SmartReportEnabler.setTriggerSensorValue("true");
+	     SmartReportEnabler.setInactivityThreshold("0.5");
 	     /*Enable*/
 	     SmartReportEnabler.setContactSensorsEnable(Arrays.asList("true","true"));
 	     SmartReportEnabler.setElectricSensorsEnable(Arrays.asList("true","true"));
+	     SmartReportEnabler.setLightSensorsEnable(Arrays.asList("true","true"));
 	     /*Value*/
 	     SmartReportEnabler.setContactSensorsValue(Arrays.asList("true","false"));
 	     SmartReportEnabler.setElectricSensorsValue(Arrays.asList("0.2","0.35"));
-	     
+	     SmartReportEnabler.setLightSensorsValue(Arrays.asList("false","false"));
+
 		 // Publish a motion value
 		 inactivitySensorMock.inactivityLevel((float) 2);
 		 inactivitySensorMock.setLastInteraction(new Interaction(InteractionType.CLOSURE, SmartReportEnabler.getTriggerSensorId(), null));
@@ -360,6 +309,8 @@ public class SmartReportTestCase {
 		 //contactSensor2Mock.setContact(false);
 		 electricMeter1Mock.setConsumption((float)0.5);
 		 electricMeter2Mock.setConsumption((float)0.8);
+		 lightSensor1Mock.setIsAlive(true);
+		 //lightSensor2Mock.setIsAlive(false);
 		 
 		 // And expect a message sent
 		 assertFalse(messengerMock.expectSendMessage(new Message()));

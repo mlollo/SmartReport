@@ -9,7 +9,8 @@ import java.io.Serializable;
  * context ReportContext as SensorReport[] {
  * 	when provided TriggerContext
  * 	   		get contact from ContactSensor,
- * 	   		consumption from ElectricMeter
+ * 	   		consumption from ElectricMeter,
+ * 	   		on from Light
  * 	maybe publish;
  * }
  * </pre>

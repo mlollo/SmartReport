@@ -14,7 +14,8 @@ import fr.inria.phoenix.diasuite.framework.context.triggercontext.TriggerContext
  * context ReportContext as SensorReport[] {
  * 	when provided TriggerContext
  * 	   		get contact from ContactSensor,
- * 	   		consumption from ElectricMeter
+ * 	   		consumption from ElectricMeter,
+ * 	   		on from Light
  * 	maybe publish;
  * }
  * </pre>
@@ -129,7 +130,8 @@ public abstract class AbstractReportContext extends Service {
      * <pre>
      * when provided TriggerContext
      * 	   		get contact from ContactSensor,
-     * 	   		consumption from ElectricMeter
+     * 	   		consumption from ElectricMeter,
+     * 	   		on from Light
      * 	maybe publish;
      * </pre>
      * 
@@ -148,13 +150,15 @@ public abstract class AbstractReportContext extends Service {
      * <code>
      * when provided TriggerContext
      * 	   		get contact from ContactSensor,
-     * 	   		consumption from ElectricMeter
+     * 	   		consumption from ElectricMeter,
+     * 	   		on from Light
      * 	maybe publish;
      * </code>
      */
     protected final class DiscoverForTriggerContext {
         private final ContactSensorDiscovererForTriggerContext contactSensorDiscoverer = new ContactSensorDiscovererForTriggerContext(AbstractReportContext.this);
         private final ElectricMeterDiscovererForTriggerContext electricMeterDiscoverer = new ElectricMeterDiscovererForTriggerContext(AbstractReportContext.this);
+        private final LightDiscovererForTriggerContext lightDiscoverer = new LightDiscovererForTriggerContext(AbstractReportContext.this);
         
         /**
          * @return a {@link ContactSensorDiscovererForTriggerContext} object to discover <code>ContactSensor</code> devices
@@ -168,6 +172,13 @@ public abstract class AbstractReportContext extends Service {
          */
         public ElectricMeterDiscovererForTriggerContext electricMeters() {
             return electricMeterDiscoverer;
+        }
+        
+        /**
+         * @return a {@link LightDiscovererForTriggerContext} object to discover <code>Light</code> devices
+         */
+        public LightDiscovererForTriggerContext lights() {
+            return lightDiscoverer;
         }
     }
     
@@ -489,6 +500,186 @@ public abstract class AbstractReportContext extends Service {
          */
         public java.lang.Float getConsumption() throws InvocationException {
             return (java.lang.Float) callGetValue("consumption");
+        }
+        
+        /**
+         * @return the value of the <code>id</code> attribute
+         */
+        public java.lang.String id() {
+            return (java.lang.String) callGetValue("id");
+        }
+        
+        /**
+         * @return the value of the <code>location</code> attribute
+         */
+        public java.lang.String location() {
+            return (java.lang.String) callGetValue("location");
+        }
+        
+        /**
+         * @return the value of the <code>user</code> attribute
+         */
+        public java.lang.String user() {
+            return (java.lang.String) callGetValue("user");
+        }
+    }
+    
+    /**
+     * Discover object that will exposes the <code>Light</code> devices to get their sources for the
+     * <code>when provided TriggerContext</code> interaction contract.
+     * <p>
+     * ------
+     * Light
+     * ------
+     * 
+     * <pre>
+     * device Light extends Appliance {
+     * }
+     * </pre>
+     */
+    protected final static class LightDiscovererForTriggerContext {
+        private Service serviceParent;
+        
+        private LightDiscovererForTriggerContext(Service serviceParent) {
+            super();
+            this.serviceParent = serviceParent;
+        }
+        
+        private LightCompositeForTriggerContext instantiateComposite() {
+            return new LightCompositeForTriggerContext(serviceParent);
+        }
+        
+        /**
+         * Returns a composite of all accessible <code>Light</code> devices
+         * 
+         * @return a {@link LightCompositeForTriggerContext} object composed of all discoverable <code>Light</code>
+         */
+        public LightCompositeForTriggerContext all() {
+            return instantiateComposite();
+        }
+        
+        /**
+         * Returns a proxy to one out of all accessible <code>Light</code> devices
+         * 
+         * @return a {@link LightProxyForTriggerContext} object pointing to a random discoverable <code>Light</code> device
+         */
+        public LightProxyForTriggerContext anyOne() {
+            return all().anyOne();
+        }
+        
+        /**
+         * Returns a composite of all accessible <code>Light</code> devices whose attribute <code>id</code> matches a given value.
+         * 
+         * @param id The <code>id<code> attribute value to match.
+         * @return a {@link LightCompositeForTriggerContext} object composed of all matching <code>Light</code> devices
+         */
+        public LightCompositeForTriggerContext whereId(java.lang.String id) throws CompositeException {
+            return instantiateComposite().andId(id);
+        }
+        
+        /**
+         * Returns a composite of all accessible <code>Light</code> devices whose attribute <code>location</code> matches a given value.
+         * 
+         * @param location The <code>location<code> attribute value to match.
+         * @return a {@link LightCompositeForTriggerContext} object composed of all matching <code>Light</code> devices
+         */
+        public LightCompositeForTriggerContext whereLocation(java.lang.String location) throws CompositeException {
+            return instantiateComposite().andLocation(location);
+        }
+        
+        /**
+         * Returns a composite of all accessible <code>Light</code> devices whose attribute <code>user</code> matches a given value.
+         * 
+         * @param user The <code>user<code> attribute value to match.
+         * @return a {@link LightCompositeForTriggerContext} object composed of all matching <code>Light</code> devices
+         */
+        public LightCompositeForTriggerContext whereUser(java.lang.String user) throws CompositeException {
+            return instantiateComposite().andUser(user);
+        }
+    }
+    
+    /**
+     * A composite of several <code>Light</code> devices to get their sources for the
+     * <code>when provided TriggerContext</code> interaction contract.
+     * <p>
+     * ------
+     * Light
+     * ------
+     * 
+     * <pre>
+     * device Light extends Appliance {
+     * }
+     * </pre>
+     */
+    protected final static class LightCompositeForTriggerContext extends fr.inria.diagen.core.service.composite.Composite<LightProxyForTriggerContext> {
+        private LightCompositeForTriggerContext(Service serviceParent) {
+            super(serviceParent, "/Device/Device/PhysicalDevice/Appliance/Light/");
+        }
+        
+        @Override
+        protected LightProxyForTriggerContext instantiateProxy(RemoteServiceInfo rsi) {
+            return new LightProxyForTriggerContext(service, rsi);
+        }
+        
+        /**
+         * Returns this composite in which a filter was set to the attribute <code>id</code>.
+         * 
+         * @param id The <code>id<code> attribute value to match.
+         * @return this {@link LightCompositeForTriggerContext}, filtered using the attribute <code>id</code>.
+         */
+        public LightCompositeForTriggerContext andId(java.lang.String id) throws CompositeException {
+            filterByAttribute("id", id);
+            return this;
+        }
+        
+        /**
+         * Returns this composite in which a filter was set to the attribute <code>location</code>.
+         * 
+         * @param location The <code>location<code> attribute value to match.
+         * @return this {@link LightCompositeForTriggerContext}, filtered using the attribute <code>location</code>.
+         */
+        public LightCompositeForTriggerContext andLocation(java.lang.String location) throws CompositeException {
+            filterByAttribute("location", location);
+            return this;
+        }
+        
+        /**
+         * Returns this composite in which a filter was set to the attribute <code>user</code>.
+         * 
+         * @param user The <code>user<code> attribute value to match.
+         * @return this {@link LightCompositeForTriggerContext}, filtered using the attribute <code>user</code>.
+         */
+        public LightCompositeForTriggerContext andUser(java.lang.String user) throws CompositeException {
+            filterByAttribute("user", user);
+            return this;
+        }
+    }
+    
+    /**
+     * A proxy to one <code>Light</code> device to get its sources for the
+     * <code>when provided TriggerContext</code> interaction contract.
+     * <p>
+     * ------
+     * Light
+     * ------
+     * 
+     * <pre>
+     * device Light extends Appliance {
+     * }
+     * </pre>
+     */
+    protected final static class LightProxyForTriggerContext extends Proxy {
+        private LightProxyForTriggerContext(Service service, RemoteServiceInfo remoteServiceInfo) {
+            super(service, remoteServiceInfo);
+        }
+        
+        /**
+         * Returns the value of the <code>on</code> source of this <code>Light</code> device
+         * 
+         * @return the value of the <code>on</code> source
+         */
+        public java.lang.Boolean getOn() throws InvocationException {
+            return (java.lang.Boolean) callGetValue("on");
         }
         
         /**

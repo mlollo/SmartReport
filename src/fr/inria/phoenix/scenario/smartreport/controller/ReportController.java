@@ -32,6 +32,11 @@ public class ReportController extends AbstractReportController {
 				String c = "contact" == p.getType() ? " ouvert " : " allumé ";
 				content.add("- " + p.getId() + " est" + c);
 			});
+			
+			content.add("\n\nDétail du rapport :");
+			report.value().stream().forEach(p -> {
+				content.add("- " + p.getId() + " : type [" + p.getType() + "], valeur ["+p.getValue()+"], valeur attendue ["+p.getExpectedValue()+"]");
+			});
 		}
 		Message message = new Message(to, title, content.stream().collect(Collectors.joining("\n")), null);
 		System.out.println(message);
